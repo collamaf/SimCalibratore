@@ -48,14 +48,14 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1RunAction::B1RunAction(G4double x0, G4double ZValue, G4double AbsHoleDiam, G4double TBR, G4int SourceSelect, G4int SensorChoice, G4String OutFileName)
+B1RunAction::B1RunAction(G4double HoleZ, G4double OrganZ, G4double AbsHoleDiam, G4double TBR, G4int SourceSelect, G4int SensorChoice, G4String OutFileName)
 : G4UserRunAction(),
 fEdep("Edep", 0.),
 //fEdepSiPM("EdepSiPM", 0.),
 fEdep2("Edep2", 0.),
 fEdkin("Edkin", 0.)
-, fX0Scan(x0)
-, fZValue(ZValue)
+, fHoleZ(HoleZ)
+, fOrganZ(OrganZ)
 , fAbsHoleDiam(AbsHoleDiam)
 , fTBR(TBR)
 , fSourceSelect(SourceSelect)

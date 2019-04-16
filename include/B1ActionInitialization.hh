@@ -45,8 +45,8 @@ public:
 	virtual void Build() const;
 	
 protected:
-	G4double fX0Scan;
-	G4double fZValue;
+	G4double fHoleZ;
+	G4double fOrganZ;
 	G4double fAbsHoleDiam;
 	G4double fTBR;
 	G4int fSourceSelect;

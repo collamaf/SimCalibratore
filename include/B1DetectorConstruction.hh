@@ -43,7 +43,7 @@ class G4LogicalVolume;
 class B1DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-	B1DetectorConstruction(G4double, G4double, G4double, G4int, G4int ,G4double, G4double, G4double, G4double, G4double, G4double, G4double, G4double , G4double, G4double, G4int, G4bool, G4int, G4int, G4int,G4double);
+	B1DetectorConstruction(G4double, G4double, G4int);
 	virtual ~B1DetectorConstruction();
 	
 	virtual G4VPhysicalVolume* Construct();
@@ -52,27 +52,9 @@ public:
 	
 protected:
 	G4LogicalVolume*  fScoringVolume;
-	G4double fX0Scan;
-	G4double fZValue;
-	G4double fAbsHoleDiam;
+	G4double fHoleZ;
+	G4double fOrganZ;
 	G4int fSourceSelect;
-	G4int fAbsorberMaterial;
-	G4double fPterDiameter;
-	G4double fPterThickness;
-	G4double fSourceDiameter;
-	G4double fSourceThickness;
-	G4double fAbsorberThickness;
-	G4double fCaseDepth;
-	G4double fLateralCaseThickness;
-	G4double fBackCaseThickness;
-	G4double fHorsesShoeLateralThickness;
-	G4double fHorsesShoeBackThickness;
-	G4int fHousingCase;
-	G4bool fScintFlag;
-	G4int fGaSet;
-	G4int fApparatusMat;
-	G4int fPosAbsorber;
-	G4double fAbsCenter;
 	
 	G4Region* sorgente = new G4Region("SourceReg");
 	G4Region* ABSRegion = new G4Region("ABSRegion");

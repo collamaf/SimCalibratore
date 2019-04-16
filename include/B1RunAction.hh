@@ -130,8 +130,8 @@ private:
 	G4Accumulable<G4double> fEdep2;
 	G4Accumulable <G4double> fEdkin;
 	
-	G4double fX0Scan;
-	G4double fZValue;
+	G4double fHoleZ;
+	G4double fOrganZ;
 	G4double fAbsHoleDiam;
 	G4int nbEventInRun;
 	G4double fTBR;

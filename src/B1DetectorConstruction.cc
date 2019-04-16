@@ -56,9 +56,9 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1DetectorConstruction::B1DetectorConstruction(G4double x0, G4double ZValue, G4double AbsHoleDiam, G4int SourceSelect, G4int AbsorberMaterial,G4double PterDiameter, G4double PterThickness,G4double SourceDiameter,G4double SourceThickness, G4double AbsorberThickness, G4double ProbeCaseDepth, G4double ProbeCaseLateralThickness, G4double ProbeCaseBackThickness, G4double HSLateralThickness, G4double HSBackThickness, G4int HousingCase, G4bool ScintFlag, G4int GaSet, G4int ApparatusMat,G4int PosAbsorber,G4double AbsCenter)
+B1DetectorConstruction::B1DetectorConstruction(G4double HoleZ, G4double OrganZ, G4int SourceSelect)
 : G4VUserDetectorConstruction(),
-fScoringVolume(0), fX0Scan(x0), fZValue(ZValue), fAbsHoleDiam(AbsHoleDiam), fSourceSelect(SourceSelect), fAbsorberMaterial(AbsorberMaterial), fPterDiameter(PterDiameter), fPterThickness(PterThickness), fSourceDiameter(SourceDiameter), fSourceThickness(SourceThickness), fAbsorberThickness(AbsorberThickness),fCaseDepth(ProbeCaseDepth),fLateralCaseThickness(ProbeCaseLateralThickness), fBackCaseThickness(ProbeCaseBackThickness), fHorsesShoeLateralThickness(HSLateralThickness),fHorsesShoeBackThickness(HSBackThickness), fHousingCase(HousingCase), fScintFlag(ScintFlag), fGaSet(GaSet), fApparatusMat (ApparatusMat), fPosAbsorber (PosAbsorber), fAbsCenter (AbsCenter)
+fScoringVolume(0), fHoleZ(HoleZ), fOrganZ(OrganZ),fSourceSelect(SourceSelect)
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -83,6 +83,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double world_sizeXY = 0.5*m;
 	G4double world_sizeZ  = 0.5*m;
 	G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
+	G4Material* acqua = nist->FindOrBuildMaterial("G4_WATER");
 	//	G4Material* world_mat = nist->FindOrBuildMaterial("G4_Galactic");
 	
 	G4Box* solidWorld =
@@ -126,23 +127,17 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double densityAlu = 2.600*g/cm3;
 	G4NistManager::Instance()->BuildMaterialWithNewDensity("MyAlu","G4_Al",densityAlu);
 	
-	//###################################################
-	// AGAR AGAR Source - AgarAgar should be C14 H24 O9
-	//##########################
-	G4double Agardensity = 1.030*g/cm3;
-	G4Material* AgarAgar = new G4Material (name="AgarAgar", Agardensity, ncomponents=3);
-	AgarAgar->AddElement (elH, natoms=24);
-	AgarAgar->AddElement (elC, natoms=14);
-	AgarAgar->AddElement (elO, natoms=9);
+	G4Material* SourceSR_mat = nist->FindOrBuildMaterial("MyAlu");
+
 	
-	//###################################################
-	// ABS material - ABS should be C15 H17 N
-	//##########################
-	G4double ABSdensity = 0.7*g/cm3;
-	G4Material* ABS = new G4Material (name="ABS", ABSdensity, ncomponents=3);
-	ABS->AddElement (elH, natoms=17);
-	ABS->AddElement (elC, natoms=15);
-	ABS->AddElement (elN, natoms=1);
+	// Plastic scintillator tiles (used both in CMS hadron calorimeter
+	// and ATLAS hadron barrel calorimeter):
+	//     X0 = 42.4 cm  and  lambda_I = 79.360 cm.
+	G4double density = 1.032*g/cm3;
+	G4Material* Polystyrene = new G4Material(name="Polystyrene", density, 2);
+	Polystyrene->AddElement(elC, natoms=19);
+	Polystyrene->AddElement(elH, natoms=21);
+	
 	
 	//###################################################
 	// P-Terphenyl Material
@@ -151,24 +146,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4Material* PTerphenyl= new G4Material (name="PTerphenyl", PTerphenyldensity, ncomponents=2);
 	PTerphenyl->AddElement (elC, natoms=18);
 	PTerphenyl->AddElement (elH, natoms=14);
-	
-	//###################################################
-	// Delrin Material      C H2 O
-	//##########################
-	G4double Delrindensity = 1.41*g/cm3;
-	G4Material* Delrin= new G4Material (name="Delrin", Delrindensity, ncomponents=3);
-	Delrin->AddElement (elC, natoms=1);
-	Delrin->AddElement (elH, natoms=2);
-	Delrin->AddElement (elO, natoms=1);
-	
-	//###################################################
-	// GaContainer2 Material (ABS)
-	//##########################
-	G4double GaContainer2Matdensity = 0.43*g/cm3; //mean measured density
-	G4Material* GaContainer2Mat = new G4Material (name="GaContainer2Mat", GaContainer2Matdensity, ncomponents=3);
-	GaContainer2Mat->AddElement (elH, natoms=17);
-	GaContainer2Mat->AddElement (elC, natoms=15);
-	GaContainer2Mat->AddElement (elN, natoms=1);
+
 	
 	//##########################
 	//###################################################
@@ -179,31 +157,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	//###################################################
 	// Assignment of materials
 	//##########################
-	
-	G4Material* SourceExtY_mat = AgarAgar;
-	G4Material* ABSaround_mat = ABS;
-	G4Material* ABSbehind_mat = ABS;
-	G4Material* GaContainer_mat=nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	G4Material* GaContainer2_mat = GaContainer2Mat;
-	G4Material* GaContainer3_mat =nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	G4Material* ProbeContainer_mat=nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	G4Material* SourceExtGa_mat=nist->FindOrBuildMaterial("G4_WATER");
-	G4Material* SourceSR_mat = nist->FindOrBuildMaterial("MyAlu");
-	G4Material* FrontShield_mat = nist->FindOrBuildMaterial("MyAlu");
-	G4Material* shapeDummy_mat = nist->FindOrBuildMaterial("G4_AIR");
-	G4Material* Pter_mat = PTerphenyl;
-	G4Material* PVC_mat= nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	G4Material* Delrin_mat=Delrin;
-	G4Material* Absorber_mat = nist->FindOrBuildMaterial("G4_Cu");
-	G4Material* SiPM_mat = nist->FindOrBuildMaterial("G4_Si");
-	G4Material* Table_mat = nist->FindOrBuildMaterial("MyAlu");
-	
-	//Materials for NL probe case
-	G4Material* PlasticCase_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	G4Material* HorsesShoe_mat= nist->FindOrBuildMaterial("G4_Pb");
-	G4Material* CaseInner_mat=nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
-	
-	
 	
 	//##########################
 	//###################################################
@@ -258,21 +211,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 											SourceSR_mat,           //its material
 											"Source");            //its name
 	
-//	if(fGaSet==1 && (fSourceSelect==1 || fSourceSelect==2 || fSourceSelect==6)) { //If I requested the Sr source (or the flat electron one for efficiencies)
-//		G4cout<<"GEOMETRY DEBUG - Sr(-like) Source has been placed!!"<<G4endl;
-//
-//		new G4PVPlacement(0,                     //no rotation
-//											posSourceSR,       //at (0,0,0)
-//											logicSourceSR,            //its logical volume
-//											"Source",               //its name
-//											logicWorld,            //its mother  volume
-//											false,                 //no boolean operation
-//											0,                     //copy number
-//											checkOverlaps);        //overlaps checking
-//
-//		logicSourceSR->SetRegion(sorgente);
-//		sorgente->AddRootLogicalVolume(logicSourceSR);
-//	}
 	//################################################### END SR SOURCE
 	
 	
@@ -289,7 +227,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double ScintScassoZ=1.5*mm;
 
 	G4double ScintBucoR=15*mm/2.;
-	G4double ScintBucoZ=8*mm;
+	G4double ScintBucoZ=fHoleZ;
 	
 	G4double VialR=14.15*mm/2.;
 	G4double VialDR=1*mm;
@@ -297,7 +235,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double VialCapZ=VialDR;
 
 	G4double SourceOrganR=VialR-VialDR;
-	G4double SourceOrganZ=4*mm;
+	G4double SourceOrganZ=fOrganZ;
 	
 	G4VisAttributes* ScintVisAtt=new G4VisAttributes(G4Colour(0,0,1));
 	G4VisAttributes* VialVisAtt=new G4VisAttributes(G4Colour(0,1,0));
@@ -312,7 +250,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4VSolid* solidScintTemp= new G4UnionSolid("ScintTemp",solidScintBulk,solidScintScasso,0,G4ThreeVector(0.,0.,ScintZ/2.));
 	G4VSolid* solidScintAll= new G4SubtractionSolid("ScintAll",solidScintTemp,solidScintBuco,0,G4ThreeVector(0.,0.,-ScintZ/2.+ScintBucoZ/2.));
 
-	G4LogicalVolume* logicScint =	new G4LogicalVolume(solidScintAll,Pter_mat,"Scint");
+	G4LogicalVolume* logicScint =	new G4LogicalVolume(solidScintAll,Polystyrene,"Scint");
 	G4VPhysicalVolume* physScint=new G4PVPlacement(0,G4ThreeVector(0,0,0),logicScint,"Scint",logicWorld,false,0, checkOverlaps);
 	logicScint->SetVisAttributes(ScintVisAtt);
 
@@ -329,12 +267,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4Tubs* solidVialCap =	new G4Tubs("VialCap",0, VialR,VialCapZ*0.5, Ang0, Ang2Pi);
 	G4VSolid* solidVial= new G4UnionSolid("Vial",solidVialBody,solidVialCap,0,G4ThreeVector(0.,0.,VialZ/2.+VialCapZ/2.));
 	
-	G4LogicalVolume* logicVial =	new G4LogicalVolume(solidVial,Pter_mat,"Vial");
+	G4LogicalVolume* logicVial =	new G4LogicalVolume(solidVial,Polystyrene,"Vial");
 
 	
 	
 	G4Tubs* solidSourceOrgan =	new G4Tubs("SourceOrgan",0, SourceOrganR,SourceOrganZ*0.5, Ang0, Ang2Pi);
-	G4LogicalVolume* logicSourceOrgan =	new G4LogicalVolume(solidSourceOrgan,Pter_mat,"Vial");
+	G4LogicalVolume* logicSourceOrgan =	new G4LogicalVolume(solidSourceOrgan,acqua,"Vial");
 	logicSourceOrgan->SetVisAttributes(SourceOrganVisAtt);
 
 	

@@ -1,4 +1,4 @@
-# Full simulation of Pter beta- probe in Geant4
+# Simulation of the activity calibrator in Geant4
 
 ## HOW TO RUN:
 ```
