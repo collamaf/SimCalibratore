@@ -243,7 +243,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	//###################################################
 	// Sr90 lab Source
 	//##########################
-	G4ThreeVector posSourceSR = G4ThreeVector(0, 0, -DzSourceSR*0.5);
 	
 	
 	G4Tubs* solidSourceSR =
@@ -290,15 +289,19 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double ScintScassoZ=1.5*mm;
 
 	G4double ScintBucoR=15*mm/2.;
-	G4double ScintBucoZ=5*mm;
+	G4double ScintBucoZ=8*mm;
 	
 	G4double VialR=14.15*mm/2.;
 	G4double VialDR=1*mm;
 	G4double VialZ=46*mm;
 	G4double VialCapZ=VialDR;
 
+	G4double SourceOrganR=VialR-VialDR;
+	G4double SourceOrganZ=4*mm;
+	
 	G4VisAttributes* ScintVisAtt=new G4VisAttributes(G4Colour(0,0,1));
 	G4VisAttributes* VialVisAtt=new G4VisAttributes(G4Colour(0,1,0));
+	G4VisAttributes* SourceOrganVisAtt=new G4VisAttributes(G4Colour(1,0,0));
 
 
 	G4Box* solidScintBulk =	new G4Box("solidScintBulk",ScintX*0.5,ScintY*0.5,ScintZ*0.5);
@@ -320,7 +323,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	
 	
 	G4ThreeVector posVial= G4ThreeVector(0,0,-VialZ/2.-VialCapZ-ScintZ/2.+ScintBucoZ);
-//	G4ThreeVector posVial= G4ThreeVector(0,0,-29.5*mm);
+	G4ThreeVector posSourceOrgan= G4ThreeVector(0,0,-SourceOrganZ/2.-VialCapZ-ScintZ/2.+ScintBucoZ);
 
 	G4Tubs* solidVialBody =	new G4Tubs("VialBody",VialR-VialDR, VialR,VialZ*0.5, Ang0, Ang2Pi);
 	G4Tubs* solidVialCap =	new G4Tubs("VialCap",0, VialR,VialCapZ*0.5, Ang0, Ang2Pi);
@@ -328,10 +331,26 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	
 	G4LogicalVolume* logicVial =	new G4LogicalVolume(solidVial,Pter_mat,"Vial");
 
+	
+	
+	G4Tubs* solidSourceOrgan =	new G4Tubs("SourceOrgan",0, SourceOrganR,SourceOrganZ*0.5, Ang0, Ang2Pi);
+	G4LogicalVolume* logicSourceOrgan =	new G4LogicalVolume(solidSourceOrgan,Pter_mat,"Vial");
+	logicSourceOrgan->SetVisAttributes(SourceOrganVisAtt);
+
+	
+	
+	
+	
+	
+	if (fSourceSelect==1) {
 	G4VPhysicalVolume* physVial=new G4PVPlacement(0,posVial,logicVial,"Vial",logicWorld,false,0, checkOverlaps);
+		new G4PVPlacement(0,posSourceOrgan,logicSourceOrgan,"Source",logicWorld,false,0,checkOverlaps);
 
 	logicVial->SetVisAttributes(VialVisAtt);
-
+	} else if (fSourceSelect==0) { //Sr Lab Source
+		G4ThreeVector posSourceSR = G4ThreeVector(0, 0, -ScintZ*0.5-DzSourceSR/2.);
+		new G4PVPlacement(0,posSourceSR,logicSourceSR,"Source",logicWorld,false,0,checkOverlaps);
+	}
 	
 	
 
