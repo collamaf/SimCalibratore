@@ -64,14 +64,14 @@ public:
 	// void AddEdepEl (G4double edepEl);
 	
 	
-	std::vector<G4double>& GetPterEn() {return RunVPterEn; }
-	std::vector<G4double>& GetPterEnPrim() {return RunVPterPrimEn; }
-	std::vector<G4double>& GetPterPartPrim() {return RunVPterPrimPart; }
-	std::vector<G4float>& GetPterTime() {return RunVPterTime; }
-	std::vector<G4double>& GetPterX() {return RunVPterX; }
-	std::vector<G4double>& GetPterY() {return RunVPterY; }
-	std::vector<G4double>& GetPterZ() {return RunVPterZ; }
-	std::vector<G4double>& GetPterPart() {return RunVPterPart; }
+	std::vector<G4double>& GetScintEn() {return RunVScintEn; }
+	std::vector<G4double>& GetScintEnPrim() {return RunVScintPrimEn; }
+	std::vector<G4double>& GetScintPartPrim() {return RunVScintPrimPart; }
+	std::vector<G4float>& GetScintTime() {return RunVScintTime; }
+	std::vector<G4double>& GetScintX() {return RunVScintX; }
+	std::vector<G4double>& GetScintY() {return RunVScintY; }
+	std::vector<G4double>& GetScintZ() {return RunVScintZ; }
+	std::vector<G4double>& GetScintPart() {return RunVScintPart; }
 	
 	std::vector<G4double>& GetExitEn() {return RunVExitEn; }
 	std::vector<G4double>& GetExitX() {return RunVExitX; }
@@ -94,8 +94,8 @@ public:
 	std::vector<G4double>& GetEAbsComp() {return RunVEAbsComp; }
 	std::vector<G4double>& GetEAbsSiPMComp() {return RunVEAbsSiPMComp; }
 
-	std::vector<G4double>& GetPrePterEn() {return RunVPrePterEn; }
-	std::vector<G4double>& GetPrePterPart() {return RunVPrePterPart; }
+	std::vector<G4double>& GetPreScintEn() {return RunVPreScintEn; }
+	std::vector<G4double>& GetPreScintPart() {return RunVPreScintPart; }
 	
 	std::vector<G4double>& GetPreProbeEn() {return RunVPreProbeEn; }
 	std::vector<G4double>& GetPreProbePart() {return RunVPreProbePart; }
@@ -153,17 +153,17 @@ private:
 	void CreateHistogram();
 	void WriteHistogram();
 	
-	std::vector<G4double> RunVPterEn;
-	std::vector<G4double>	RunVPterPrimEn;
-	std::vector<G4double> RunVPterPrimPart;
-	std::vector<G4float>	RunVPterTime;
-	std::vector<G4double> RunVPterX;
-	std::vector<G4double> RunVPterY;
-	std::vector<G4double> RunVPterZ;
-	std::vector<G4double> RunVPterPart;
+	std::vector<G4double> RunVScintEn;
+	std::vector<G4double>	RunVScintPrimEn;
+	std::vector<G4double> RunVScintPrimPart;
+	std::vector<G4float>	RunVScintTime;
+	std::vector<G4double> RunVScintX;
+	std::vector<G4double> RunVScintY;
+	std::vector<G4double> RunVScintZ;
+	std::vector<G4double> RunVScintPart;
 	
-	std::vector<G4double> RunVPrePterEn;
-	std::vector<G4double> RunVPrePterPart;
+	std::vector<G4double> RunVPreScintEn;
+	std::vector<G4double> RunVPreScintPart;
 	
 	std::vector<G4double> RunVPreProbeEn;
 	std::vector<G4double> RunVPreProbePart;

@@ -138,16 +138,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	Polystyrene->AddElement(elC, natoms=19);
 	Polystyrene->AddElement(elH, natoms=21);
 	
-	
-	//###################################################
-	// P-Terphenyl Material
-	//##########################
-	G4double PTerphenyldensity = 1.23*g/cm3;
-	G4Material* PTerphenyl= new G4Material (name="PTerphenyl", PTerphenyldensity, ncomponents=2);
-	PTerphenyl->AddElement (elC, natoms=18);
-	PTerphenyl->AddElement (elH, natoms=14);
+	G4Material* Scint_mat = Polystyrene;
+	G4Material* Vial_mat = Polystyrene;
 
-	
 	//##########################
 	//###################################################
 	//###################################################################
@@ -251,7 +244,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4VSolid* solidScintTemp= new G4UnionSolid("ScintTemp",solidScintBulk,solidScintScasso,0,G4ThreeVector(0.,0.,ScintZ/2.));
 	G4VSolid* solidScintAll= new G4SubtractionSolid("ScintAll",solidScintTemp,solidScintBuco,0,G4ThreeVector(0.,0.,-ScintZ/2.+ScintBucoZ/2.));
 
-	G4LogicalVolume* logicScint =	new G4LogicalVolume(solidScintAll,Polystyrene,"Scint");
+	G4LogicalVolume* logicScint =	new G4LogicalVolume(solidScintAll,Scint_mat,"Scint");
 	G4VPhysicalVolume* physScint=new G4PVPlacement(0,G4ThreeVector(0,0,0),logicScint,"Scint",logicWorld,false,0, checkOverlaps);
 	logicScint->SetVisAttributes(ScintVisAtt);
 
@@ -259,7 +252,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 //	logicScint->SetRegion(pterreg);
 //	pterreg->AddRootLogicalVolume(logicScint);
 //
-	
+//	Vial_mat=world_mat; //to temporarly remove Vial
 	
 	G4ThreeVector posVial= G4ThreeVector(0,0,-VialZ/2.-VialCapZ-ScintZ/2.+ScintBucoZ);
 	G4ThreeVector posSourceOrgan= G4ThreeVector(0,0,-SourceOrganZ/2.-VialCapZ-ScintZ/2.+ScintBucoZ);
@@ -268,7 +261,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4Tubs* solidVialCap =	new G4Tubs("VialCap",0, VialR,VialCapZ*0.5, Ang0, Ang2Pi);
 	G4VSolid* solidVial= new G4UnionSolid("Vial",solidVialBody,solidVialCap,0,G4ThreeVector(0.,0.,VialZ/2.+VialCapZ/2.));
 	
-	G4LogicalVolume* logicVial =	new G4LogicalVolume(solidVial,Polystyrene,"Vial");
+	G4LogicalVolume* logicVial =	new G4LogicalVolume(solidVial,Vial_mat,"Vial");
 
 	
 	

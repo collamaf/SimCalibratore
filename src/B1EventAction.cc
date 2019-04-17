@@ -46,7 +46,7 @@ fEdep(0.),
 fEdepSiPM(0.),
 fEdkin(0.),
 fNumHitsDet(0),
-fPrePterNo(0),
+fPreScintNo(0),
 fPreProbeNo(0),
 fPostAbsNo(0),
 fEdepEle(0.),
@@ -56,15 +56,15 @@ fEdepSiPMpos(0.),
 fEdepSiPMfot(0.),
 fEnteringParticle(0),
 fSourceExitPassCounter(0.),
-fPterPassCounter(0.),
+fScintPassCounter(0.),
 fPostAbsPassCounter(0.),
 fPreProbePassCounter(0.),
 fNSourceExit(0.),
 fSourceExitStoreTrackID(0),
-fPterStoreTrackID(0),
+fScintStoreTrackID(0),
 fPostAbsStoreTrackID(0),
 fPreProbeStoreTrackID(0),
-fEnterPterFlag(0)
+fEnterScintFlag(0)
 {}
 
 
@@ -80,20 +80,20 @@ void B1EventAction::BeginOfEventAction(const G4Event* )
 	fEdep = 0.;
 	fEdepSiPM=0.;
 	fEdkin = 0.;
-	(fRunAction->GetPrePterEn()).clear();
-	(fRunAction->GetPrePterPart()).clear();
+	(fRunAction->GetPreScintEn()).clear();
+	(fRunAction->GetPreScintPart()).clear();
 	(fRunAction->GetPreProbeEn()).clear();
 	(fRunAction->GetPreProbePart()).clear();
 	(fRunAction->GetPostAbsEn()).clear();
 	(fRunAction->GetPostAbsPart()).clear();
-	(fRunAction->GetPterEn()).clear();
-	(fRunAction->GetPterEnPrim()).clear();
-	(fRunAction->GetPterPartPrim()).clear();
-	(fRunAction->GetPterTime()).clear();
-	(fRunAction->GetPterX()).clear();
-	(fRunAction->GetPterY()).clear();
-	(fRunAction->GetPterZ()).clear();
-	(fRunAction->GetPterPart()).clear();
+	(fRunAction->GetScintEn()).clear();
+	(fRunAction->GetScintEnPrim()).clear();
+	(fRunAction->GetScintPartPrim()).clear();
+	(fRunAction->GetScintTime()).clear();
+	(fRunAction->GetScintX()).clear();
+	(fRunAction->GetScintY()).clear();
+	(fRunAction->GetScintZ()).clear();
+	(fRunAction->GetScintPart()).clear();
 	
 	
 	(fRunAction->GetAnnihX()).clear();
@@ -133,7 +133,7 @@ void B1EventAction::BeginOfEventAction(const G4Event* )
 	(fRunAction->GetEAbsSiPMComp()).clear();
 
 	fNumHitsDet=0;
-	fPrePterNo=0;
+	fPreScintNo=0;
 	fPreProbeNo=0;
 	fPostAbsNo=0;
 
@@ -145,15 +145,15 @@ void B1EventAction::BeginOfEventAction(const G4Event* )
 	fEnteringParticle=0;
 	fNSourceExit=0;
 	fSourceExitPassCounter=0;
-	fPterPassCounter=0;
+	fScintPassCounter=0;
 	fPostAbsPassCounter=0;
 	fPreProbePassCounter=0;
 	fSourceExitStoreTrackID=0;
-	fPterStoreTrackID=0;
+	fScintStoreTrackID=0;
 	fPostAbsStoreTrackID=0;
 	fPreProbeStoreTrackID=0;
 	fNPMT=0;
-	fEnterPterFlag=0;
+	fEnterScintFlag=0;
 
 //	fSourceX=0;
 //	fSourceY=0;
@@ -191,7 +191,7 @@ void B1EventAction::EndOfEventAction(const G4Event* evento)
 	analysisManager->FillNtupleDColumn(0, 0, fEdep/keV);
 	//analysisManager->FillNtupleDColumn(0, 34, fEdepSiPM/keV);
 	analysisManager->FillNtupleDColumn(0, 2, fNumHitsDet); //number of hits into the detector
-	analysisManager->FillNtupleDColumn(0, 11, fPrePterNo);
+	analysisManager->FillNtupleDColumn(0, 11, fPreScintNo);
 	analysisManager->FillNtupleDColumn(0, 14, fPreProbeNo);
 	analysisManager->FillNtupleDColumn(0, 17, fPostAbsNo);
 	
@@ -200,7 +200,7 @@ void B1EventAction::EndOfEventAction(const G4Event* evento)
 	analysisManager->FillNtupleDColumn(0,23, fSourceZ/mm);
 
 	analysisManager->FillNtupleIColumn(0,30, fNPMT);
-	analysisManager->FillNtupleIColumn(0,31, fEnterPterFlag);
+	analysisManager->FillNtupleIColumn(0,31, fEnterScintFlag);
 	
 	if(1||fEdep>0) analysisManager->AddNtupleRow(0);    //1|| toglie l'if
 	

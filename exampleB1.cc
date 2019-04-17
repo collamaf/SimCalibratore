@@ -59,19 +59,21 @@
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)
 {
-	G4bool VisFlag=true;
+	G4bool VisFlag=false;
 	
 	// Detect interactive mode (if no arguments) and define UI session
 	G4UIExecutive* ui = 0;
-	
+	G4String MacroName ="";
+
 	G4double HoleZ=3., OrganZ=2., OrganR=0.;
-	//AbsorberHoleDiam=-1., TBRvalue=1.,PterDiameter=6.,PterThickness=5.,SourceDiameter=10.,SourceThickness=7., AbsorberThickness=1.,ProbeCaseDepth=-155., ProbeCaseLateralThickness=1.25, ProbeCaseBackThickness=20. , HSLateralThickness=1., HSBackThickness=2., AbsCenter=2.75;
+	//AbsorberHoleDiam=-1., TBRvalue=1.,ScintDiameter=6.,ScintThickness=5.,SourceDiameter=10.,SourceThickness=7., AbsorberThickness=1.,ProbeCaseDepth=-155., ProbeCaseLateralThickness=1.25, ProbeCaseBackThickness=20. , HSLateralThickness=1., HSBackThickness=2., AbsCenter=2.75;
 	
-	G4int SourceSelect=0; //, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
+	G4int SourceSelect=0, NoOfPrimToGen=100000, Verbose=0; //, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
 	//G4bool ScintFlag=0;
 	
 	G4String fileName ="";
@@ -102,9 +104,22 @@ int main(int argc,char** argv)
 			{
 				FileNameLabel= argv[++i];;
 			}
+			else if(option.compare("-NPrim")==0)
+			{
+				NoOfPrimToGen=strtod (argv[++i], NULL);;
+			}
+			else if(option.compare("-Verbose")==0)
+			{
+				Verbose=strtod (argv[++i], NULL);;
+			}
+			else if(option.compare("-Vis")==0)
+			{
+				VisFlag=strtod (argv[++i], NULL);;
+			}
 		}
 		else
 		{
+			MacroName = argv[i]; //se ho trovato una macro (senza il "-" davanti) significa che NON voglio l'interattivo
 			fileName = argv[i]; //se ho trovato una macro (senza il "-" davanti) significa che NON voglio l'interattivo
 			VisFlag=false;
 		}
@@ -123,6 +138,7 @@ int main(int argc,char** argv)
 	
 	// ###### ORGAN
 	if (SourceSelect==0) {
+		NoOfPrimToGen*=OrganZ;
 		FileNameCommonPart.append("_OrganZ"+ std::to_string((G4int)(10*OrganZ)));
 		if (OrganR!=0) FileNameCommonPart.append("_OrganR"+ std::to_string((G4int)(10*OrganR)));
 	} else if (SourceSelect==1) {
@@ -132,6 +148,9 @@ int main(int argc,char** argv)
 	// ####### MISCELLANEUS
 	if (FileNameLabel!="") FileNameCommonPart.append("_" + FileNameLabel);
 	if (VisFlag) FileNameCommonPart.append("TEST"); //if it was a TEST run under vis
+	
+	
+	FileNameCommonPart.append("_N"+std::to_string((G4int)NoOfPrimToGen));
 	
 	OutFileName.append(FileNameCommonPart);
 	
@@ -188,12 +207,18 @@ int main(int argc,char** argv)
 	
 	// Process macro or start UI session
 	//
-	
+	runManager->Initialize();
+
 	if ( ! ui ) {
 		// batch mode
-		G4String command = "/control/execute ";
-		//		G4String fileName = argv[13];
-		UImanager->ApplyCommand(command+fileName);
+		if (MacroName!="") {
+			G4String command = "/control/execute ";
+			UImanager->ApplyCommand(command+MacroName);
+		} else {
+			UImanager->ApplyCommand("/tracking/verbose " + std::to_string(Verbose));
+			UImanager->ApplyCommand("/run/beamOn " + std::to_string(NoOfPrimToGen));
+			//			UImanager->ApplyCommand("/run/beamOn 100");
+		}
 	}
 	else {
 		// interactive mode

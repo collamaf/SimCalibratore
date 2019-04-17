@@ -55,14 +55,14 @@ B1StackingAction::ClassifyNewTrack(const G4Track* track)
 	G4int debug=0;
 	if (fabs(track->GetDynamicParticle() ->GetPDGcode())==12) return fKill; //kill neutrinos
 	
-	if (debug) G4cout<<"PterDEBUG PROVA STACKING creata nuova traccia tipo= "<< track->GetDynamicParticle() ->GetPDGcode()<<", MotherIsotope Val= "<< fRunningAction->GetMotherIsotope()<<G4endl;
+	if (debug) G4cout<<"ScintDEBUG PROVA STACKING creata nuova traccia tipo= "<< track->GetDynamicParticle() ->GetPDGcode()<<", MotherIsotope Val= "<< fRunningAction->GetMotherIsotope()<<G4endl;
 	
 	const G4VProcess* creator=track->GetCreatorProcess();
 	std::string CreatorProcname="undefined";
 	if(creator) CreatorProcname=creator->GetProcessName();
 	
 	fEventAction->ResetSourceExitPassCounter(); //collamaf: at each new track we reset the pass counter
-	fEventAction->ResetPterPassCounter(); //collamaf: at each new track we reset the pass counter
+	fEventAction->ResetScintPassCounter(); //collamaf: at each new track we reset the pass counter
 	fEventAction->ResetPostAbsPassCounter();
 	fEventAction->ResetPreProbePassCounter();
 	

@@ -69,39 +69,72 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	
 	G4int debug=0;
 	
-
+#pragma mark Exiting Source
+	// ################################################################################
+	// ###################### EXITING SOURCE
+	if(fSourceChoice==0 && NextVol && ThisVol->GetName()!="Source" && NextVol->GetName()=="Vial") 
+	{
+		//collamaf: to avoid double counting same track going back and forth, check if I already counted it
+		if (fEventAction->GetSourceExitStoreTrackID()==step->GetTrack()->GetTrackID()) { //if I already saw this track exiting the source...
+			fEventAction->AddSourceExitPassCounter(1);  //increase the counter: number of times that this track exits the source (will not be written in scoring, but used to check if it is the first crossing
+		}else {
+			fEventAction->SetSourceExitStoreTrackID(step->GetTrack()->GetTrackID());
+		}
+		
+		// Salvo le info solo della prima volta che una particella esce dalla sorgente
+		if (fEventAction->GetSourceExitPassCounter()==0) {
+			fEventAction->AddNSourceExit(1); //contatore di quante tracce escono dalla sorgente
+			(fRunningAction->GetExitEn()).push_back(step->GetPostStepPoint()->GetKineticEnergy()/keV);
+			(fRunningAction->GetExitX()).push_back(step->GetPostStepPoint()->GetPosition().x()/mm);
+			(fRunningAction->GetExitY()).push_back(step->GetPostStepPoint()->GetPosition().y()/mm);
+			(fRunningAction->GetExitZ()).push_back(step->GetPostStepPoint()->GetPosition().z()/mm);
+			(fRunningAction->GetExitCosX()).push_back(step->GetPreStepPoint()->GetMomentumDirection().x());
+			(fRunningAction->GetExitCosY()).push_back(step->GetPreStepPoint()->GetMomentumDirection().y());
+			(fRunningAction->GetExitCosZ()).push_back(step->GetPreStepPoint()->GetMomentumDirection().z());
+			(fRunningAction->GetExitPart()).push_back(step->GetTrack()->GetDynamicParticle()->GetPDGcode());
+			(fRunningAction->GetExitParentID()).push_back(step->GetTrack()->GetParentID());
+			
+			if (step->GetTrack()->GetCreatorProcess()) {
+				(fRunningAction->GetExitProcess().push_back((step->GetTrack()->GetCreatorProcess()->GetProcessType())));
+			} else {
+				(fRunningAction->GetExitProcess().push_back(-17));
+			}
+		}
+	}
+	// ###################### END EXITING SOURCE
+	// ################################################################################
+	
+	
 
 	
-#pragma mark Entering Pter
+#pragma mark Entering Detector
 	// ################################################################################
-	// ###################### ENTERING Pter (from wherever)
-	if((NextVol && ThisVol->GetName()!="Pter" && NextVol->GetName()=="Pter")) { //what enters Pter (form every different volume)
+	// ###################### ENTERING Scint (from wherever)
+	if((NextVol && ThisVol->GetName()!="Scint" && NextVol->GetName()=="Scint")) { //what enters Scint (form every different volume)
 		
-		if (debug) G4cout<<"\nCIAODEBUG\n Particella entrata in PTER - fEventAction->GetEnteringParticle() ERA = "<<fEventAction->GetEnteringParticle();
-		fEventAction->SetEnteringParticle(step->GetTrack()->GetDynamicParticle()->GetPDGcode()); //TODO: sistemare per evitare errori dovuti al fatto che è l'ultima traccia creata la prima ad essere tracciata..
+		if (debug) G4cout<<"\nCIAODEBUG\n Particella entrata in SCINT - fEventAction->GetEnteringParticle() ERA = "<<fEventAction->GetEnteringParticle();
+		fEventAction->SetEnteringParticle(step->GetTrack()->GetDynamicParticle()->GetPDGcode());
 		if (debug) G4cout<<" SETTO fEventAction->GetEnteringParticle()= "<<fEventAction->GetEnteringParticle()<<G4endl<<G4endl;
 		
 		// Check if the current track had already enetered somehow the PTER (to avoid double counting), otherwise increase the counter
-		if (fEventAction->GetPterStoreTrackID()==step->GetTrack()->GetTrackID()) { //if I already saw this track exiting the source...
-			fEventAction->AddPterPassCounter(1);  //increase the counter
-			//			G4cout<<"PterDEBUG CONTROLLA "<<fEventAction->GetPterStoreTrackID()<<", PassCounter= "<<fEventAction->GetPterPassCounter()<<G4endl;
+		if (fEventAction->GetScintStoreTrackID()==step->GetTrack()->GetTrackID()) { //if I already saw this track exiting the source...
+			fEventAction->AddScintPassCounter(1);  //increase the counter
 		}else {
-			fEventAction->SetPterStoreTrackID(step->GetTrack()->GetTrackID());
-			//			G4cout<<"PterDEBUG PRIMO PASSAGGIO!! "<<fEventAction->GetPterStoreTrackID()<<", PassCounter= "<<fEventAction->GetPterPassCounter()<<G4endl;
-			//            if (fEventAction->GetPassCounter()!=0) G4cout<<"MERDAAAAA Primo passaggio di"<<fEventAction->GetStoreTrackID()<<" ma con PassCounter= "<<fEventAction->GetPassCounter()<<G4endl;
+			fEventAction->SetScintStoreTrackID(step->GetTrack()->GetTrackID());
+			
 		}
 		
 		// Salvo le info solo della prima volta che una particella entra in pter
-		if (fEventAction->GetPterPassCounter()==0) {
-			(fRunningAction->GetPrePterEn()).push_back(step->GetPostStepPoint()->GetKineticEnergy()/keV);
-			fEventAction->AddPrePterNo(1); //update the counter of particles entering Pter in the event
-			(fRunningAction->GetPrePterPart()).push_back(step->GetTrack()->GetDynamicParticle()->GetPDGcode()); //add PID of particle enetering Pter
+		if (fEventAction->GetScintPassCounter()==0) {
+			(fRunningAction->GetPreScintEn()).push_back(step->GetPostStepPoint()->GetKineticEnergy()/keV);
+			fEventAction->AddPreScintNo(1); //update the counter of particles entering Scint in the event
+			(fRunningAction->GetPreScintPart()).push_back(step->GetTrack()->GetDynamicParticle()->GetPDGcode()); //add PID of particle enetering Scint
 		}
 	}
-	// ###################### END ENTERING Pter
+	// ###################### END ENTERING Scint
 	// ################################################################################
 
-#pragma mark Inside Pter
+#pragma mark Inside Scint
 	//Retrieve scoring volume
 	if (!fScoringVolume) {
 		const B1DetectorConstruction* detectorConstruction
@@ -111,26 +144,26 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 	}
 	
 	// ########################################
-	// ###################### INSIDE Pter - Per each hit into sensitive detector
+	// ###################### INSIDE Scint - Per each hit into sensitive detector
 	// check if we are in scoring volume
 	if (ThisVol->GetLogicalVolume() == fScoringVolume && step->GetTrack()->GetDynamicParticle() ->GetPDGcode()!=0 ) {
-		fEventAction->SetEnterPterFlag(); //Something entered pter in this event
+		fEventAction->SetEnterScintFlag(); //Something entered pter in this event
 		fEventAction->AddNumHitsDet(1); //Update the counter of number of interactions in detector
 		
 		// collect energy deposited in this step
 		G4double edepStep = step->GetTotalEnergyDeposit();
 		
 		//Fill vector
-		(fRunningAction->GetPterEn()).push_back(step->GetTotalEnergyDeposit()/keV);
-		(fRunningAction->GetPterEnPrim()).push_back(fRunningAction->GetMotherEnergy());
-		(fRunningAction->GetPterPartPrim()).push_back(fRunningAction->GetMotherPID());
-		//		(fRunningAction->GetPterTime()).push_back(step->GetTrack()->GetLocalTime()/ns);
-		(fRunningAction->GetPterTime()).push_back(step->GetTrack()->GetGlobalTime()/ns-fRunningAction->GetMotherTime());
-		//		G4cout<<"PterDEBUG  MotherTime= "<< fRunningAction->GetMotherTime()<<" PostDiff= "<<  step->GetTrack()->GetGlobalTime()/ns-fRunningAction->GetMotherTime() <<G4endl;
-		(fRunningAction->GetPterX()).push_back(step->GetPreStepPoint()->GetPosition().x()/mm);
-		(fRunningAction->GetPterY()).push_back(step->GetPreStepPoint()->GetPosition().y()/mm);
-		(fRunningAction->GetPterZ()).push_back(step->GetPreStepPoint()->GetPosition().z()/mm);
-		(fRunningAction->GetPterPart()).push_back(step->GetTrack()->GetDynamicParticle() ->GetPDGcode());
+		(fRunningAction->GetScintEn()).push_back(step->GetTotalEnergyDeposit()/keV);
+		(fRunningAction->GetScintEnPrim()).push_back(fRunningAction->GetMotherEnergy());
+		(fRunningAction->GetScintPartPrim()).push_back(fRunningAction->GetMotherPID());
+		//		(fRunningAction->GetScintTime()).push_back(step->GetTrack()->GetLocalTime()/ns);
+		(fRunningAction->GetScintTime()).push_back(step->GetTrack()->GetGlobalTime()/ns-fRunningAction->GetMotherTime());
+		//		G4cout<<"ScintDEBUG  MotherTime= "<< fRunningAction->GetMotherTime()<<" PostDiff= "<<  step->GetTrack()->GetGlobalTime()/ns-fRunningAction->GetMotherTime() <<G4endl;
+		(fRunningAction->GetScintX()).push_back(step->GetPreStepPoint()->GetPosition().x()/mm);
+		(fRunningAction->GetScintY()).push_back(step->GetPreStepPoint()->GetPosition().y()/mm);
+		(fRunningAction->GetScintZ()).push_back(step->GetPreStepPoint()->GetPosition().z()/mm);
+		(fRunningAction->GetScintPart()).push_back(step->GetTrack()->GetDynamicParticle() ->GetPDGcode());
 		
 		if (debug)  G4cout<<"CIAODEBUG Ho un rilascio di energia ("<< step->GetTotalEnergyDeposit()/keV<<" [KeV]) dovuto ad una particella entrata nel CMOS di tipo: "<<fEventAction->GetEnteringParticle()<<G4endl;
 		

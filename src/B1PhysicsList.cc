@@ -104,18 +104,18 @@ void B1PhysicsList::SetCuts()
 	*/
 	G4ProductionCuts* cuts = new G4ProductionCuts;
 	cuts->SetProductionCut(0.1*mm);
-	G4ProductionCuts* cutsPter = new G4ProductionCuts;
-	cutsPter->SetProductionCut(0.1*mm);
+	G4ProductionCuts* cutsScint = new G4ProductionCuts;
+	cutsScint->SetProductionCut(0.1*mm);
 	
 	G4RegionStore::GetInstance()->GetRegion("ABSRegion")->SetProductionCuts(cuts);
-	G4RegionStore::GetInstance()->GetRegion("PTERReg")->SetProductionCuts(cutsPter);
+	G4RegionStore::GetInstance()->GetRegion("PTERReg")->SetProductionCuts(cutsScint);
 	G4RegionStore::GetInstance()->GetRegion("SourceReg")->SetProductionCuts(cuts);
 	G4RegionStore::GetInstance()->GetRegion("FrontShieldReg")->SetProductionCuts(cuts);
 	G4RegionStore::GetInstance()->GetRegion("CarrierReg")->SetProductionCuts(cuts);
 	
 /*
 	
-	regName = "PterReg";
+	regName = "ScintReg";
 	region = G4RegionStore::GetInstance()->GetRegion(regName);
 	cuts = new G4ProductionCuts;
 	cuts->SetProductionCut(0.01*mm,G4ProductionCuts::GetIndex("gamma"));

@@ -54,7 +54,7 @@ public:
 	void AddEdkin(G4double edkin) { fEdkin += edkin; }
 	void AddNumHitsDet(G4int no) { fNumHitsDet += no; }
 	
-	void AddPrePterNo(G4int No) { fPrePterNo += No; }
+	void AddPreScintNo(G4int No) { fPreScintNo += No; }
 	void AddPreProbeNo(G4int No) { fPreProbeNo += No; }
 	void AddPostAbsNo(G4int No) { fPostAbsNo += No; }
 
@@ -83,11 +83,11 @@ public:
 	void ResetSourceExitPassCounter() {fSourceExitPassCounter=0;}
 	G4int GetSourceExitPassCounter(void) {return fSourceExitPassCounter;}
 	
-	void SetPterStoreTrackID(G4int trid) {fPterStoreTrackID=trid;}
-	G4int GetPterStoreTrackID(void) {return fPterStoreTrackID;}
-	void AddPterPassCounter(G4int num) {fPterPassCounter+=num;}
-	void ResetPterPassCounter() {fPterPassCounter=0;}
-	G4int GetPterPassCounter(void) {return fPterPassCounter;}
+	void SetScintStoreTrackID(G4int trid) {fScintStoreTrackID=trid;}
+	G4int GetScintStoreTrackID(void) {return fScintStoreTrackID;}
+	void AddScintPassCounter(G4int num) {fScintPassCounter+=num;}
+	void ResetScintPassCounter() {fScintPassCounter=0;}
+	G4int GetScintPassCounter(void) {return fScintPassCounter;}
 	
 	void SetPostAbsStoreTrackID(G4int trid) {fPostAbsStoreTrackID=trid;}
 	G4int GetPostAbsStoreTrackID(void) {return fPostAbsStoreTrackID;}
@@ -104,8 +104,8 @@ public:
 	void SetEnteringParticle(G4int part) {fEnteringParticle=part;}
 	G4int GetEnteringParticle(void) {return fEnteringParticle;}
 
-	void SetEnterPterFlag(void) {fEnterPterFlag=1;}
-	G4int GetEnterPterFlag(void) {return fEnterPterFlag;}
+	void SetEnterScintFlag(void) {fEnterScintFlag=1;}
+	G4int GetEnterScintFlag(void) {return fEnterScintFlag;}
 
 	void AddNPMT(G4int n) {fNPMT+=n;}
 
@@ -116,7 +116,7 @@ private:
 	G4double fEdepSiPM;
 	G4double fEdkin;
 	G4int fNumHitsDet;
-	G4int fPrePterNo;
+	G4int fPreScintNo;
 	G4int fPreProbeNo;
 	G4int fPostAbsNo;
 
@@ -137,7 +137,7 @@ private:
 	G4double fSourceCosZ;
 	
 	G4int fSourceExitPassCounter;
-	G4int fPterPassCounter;
+	G4int fScintPassCounter;
 	G4int fPostAbsPassCounter;
 	G4int fPreProbePassCounter;
 
@@ -146,10 +146,10 @@ private:
 	
 	G4String fExitProcess;
 	G4int fSourceExitStoreTrackID;
-	G4int fPterStoreTrackID;
+	G4int fScintStoreTrackID;
 	G4int fPostAbsStoreTrackID;
 	G4int fPreProbeStoreTrackID;
-	G4int fEnterPterFlag;
+	G4int fEnterScintFlag;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

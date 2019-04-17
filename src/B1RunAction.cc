@@ -196,19 +196,19 @@ void B1RunAction::CreateHistogram()
 	analysisManager->CreateNtupleDColumn(0,"Eabs");                           //0
 	analysisManager->CreateNtupleDColumn(0,"EabsComp", RunVEAbsComp); //1
 	
-	analysisManager->CreateNtupleDColumn(0,"InPterTrackN");                   //2
-	analysisManager->CreateNtupleDColumn(0,"InPterPart", RunVPterPart); //3
-	analysisManager->CreateNtupleDColumn(0,"InPterEn", RunVPterEn); //4
-	analysisManager->CreateNtupleDColumn(0,"InPterPrimEn", RunVPterPrimEn); //5
-	analysisManager->CreateNtupleDColumn(0,"InPterPrimPart", RunVPterPrimPart); //6
-	analysisManager->CreateNtupleFColumn(0,"InPterTime", RunVPterTime); //7
-	analysisManager->CreateNtupleDColumn(0,"InPterX", RunVPterX); //8
-	analysisManager->CreateNtupleDColumn(0,"InPterY", RunVPterY); //9
-	analysisManager->CreateNtupleDColumn(0,"InPterZ", RunVPterZ); //10
+	analysisManager->CreateNtupleDColumn(0,"InScintTrackN");                   //2
+	analysisManager->CreateNtupleDColumn(0,"InScintPart", RunVScintPart); //3
+	analysisManager->CreateNtupleDColumn(0,"InScintEn", RunVScintEn); //4
+	analysisManager->CreateNtupleDColumn(0,"InScintPrimEn", RunVScintPrimEn); //5
+	analysisManager->CreateNtupleDColumn(0,"InScintPrimPart", RunVScintPrimPart); //6
+	analysisManager->CreateNtupleFColumn(0,"InScintTime", RunVScintTime); //7
+	analysisManager->CreateNtupleDColumn(0,"InScintX", RunVScintX); //8
+	analysisManager->CreateNtupleDColumn(0,"InScintY", RunVScintY); //9
+	analysisManager->CreateNtupleDColumn(0,"InScintZ", RunVScintZ); //10
 	
-	analysisManager->CreateNtupleDColumn(0,"PrePterTrackN");                  //11
-	analysisManager->CreateNtupleDColumn(0,"PrePterPart", RunVPrePterPart); //12
-	analysisManager->CreateNtupleDColumn(0,"PrePterEn", RunVPrePterEn); //13
+	analysisManager->CreateNtupleDColumn(0,"PreScintTrackN");                  //11
+	analysisManager->CreateNtupleDColumn(0,"PreScintPart", RunVPreScintPart); //12
+	analysisManager->CreateNtupleDColumn(0,"PreScintEn", RunVPreScintEn); //13
 	
 	analysisManager->CreateNtupleDColumn(0,"PreProbeTrackN");                  //14
 	analysisManager->CreateNtupleDColumn(0,"PreProbePart", RunVPreProbePart); //15
@@ -230,7 +230,7 @@ void B1RunAction::CreateHistogram()
 	analysisManager->CreateNtupleDColumn(0,"SourcePart", RunVSourcePart); //28
 	analysisManager->CreateNtupleDColumn(0,"SourceIsotope", RunVSourceIsotope); //29
 	analysisManager->CreateNtupleIColumn(0,"Npmt");							//30
-	analysisManager->CreateNtupleIColumn(0,"EnterPterFlag"); //31
+	analysisManager->CreateNtupleIColumn(0,"EnterScintFlag"); //31
 
 
 	analysisManager->CreateNtupleDColumn(0,"AnnihilationX", RunVAnnihX); //32

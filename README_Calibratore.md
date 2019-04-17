@@ -10,36 +10,36 @@ make
 Some Use cases:
 - Gallium68 Campaign Gemelli measurements (late 2018) with PVC
 ```
-./exampleb1 -GaSet 3 -CaseDepth -155 -Source 4 -AbsD 0 -AbsT 5.5 -AbsMat 4 -AppMat 1 -ZAbs 2.75 -PosAbs 1 -PterD 6 -PterT 3 -Z 5.5 -SourceT 6.4  ../run1.mac 
+./exampleb1 -GaSet 3 -CaseDepth -155 -Source 4 -AbsD 0 -AbsT 5.5 -AbsMat 4 -AppMat 1 -ZAbs 2.75 -PosAbs 1 -ScintD 6 -ScintT 3 -Z 5.5 -SourceT 6.4  ../run1.mac 
 
 ```
 - Gallium68 Campaign Gemelli measurements (late 2018) No PVC
 ```
-./exampleb1 -GaSet 3 -CaseDepth -155 -Source 4 -AbsD -10 -AbsT 5.5 -AbsMat 4 -AppMat 1 -ZAbs 2.75 -PosAbs 1 -PterD 6 -PterT 3 -Z 5.5 -SourceT 6.4  ../run1.mac 
+./exampleb1 -GaSet 3 -CaseDepth -155 -Source 4 -AbsD -10 -AbsT 5.5 -AbsMat 4 -AppMat 1 -ZAbs 2.75 -PosAbs 1 -ScintD 6 -ScintT 3 -Z 5.5 -SourceT 6.4  ../run1.mac 
 
 ```
 
 - Electron Efficiency of laparoscopic NL-probe (Post Gallium68 Campaign Gemelli measurements (late 2018))
 ```
-./exampleb1  -Source 6   -PterD 6 -PterT 3 -Z 0 -CaseDepth 50 -CaseLT 1 -HSBT 2  ../effEle.mac 
+./exampleb1  -Source 6   -ScintD 6 -ScintT 3 -Z 0 -CaseDepth 50 -CaseLT 1 -HSBT 2  ../effEle.mac 
 
 ```
 
 - Gamma Efficiency of laparoscopic NL-probe (Post Gallium68 Campaign Gemelli measurements (late 2018))
 ```
-./exampleb1  -Source 7   -PterD 6 -PterT 3 -Z 0 -CaseDepth 50 -CaseLT 1 -HSBT 2  ../effGamma.mac 
+./exampleb1  -Source 7   -ScintD 6 -ScintT 3 -Z 0 -CaseDepth 50 -CaseLT 1 -HSBT 2  ../effGamma.mac 
 
 ```
 
 - Electron Efficiency of "standard" (pen-like) probe (Post Gallium68 Campaign Gemelli measurements (april 2019))
 ```
-./exampleb1  -Source 6   -PterD 6 -PterT 3 -Z 0 ../effEle.mac
+./exampleb1  -Source 6   -ScintD 6 -ScintT 3 -Z 0 ../effEle.mac
 
 ```
 
 - Gamma Efficiency of  "standard" (pen-like) probe (Post Gallium68 Campaign Gemelli measurements (april 2019))
 ```
-./exampleb1  -Source 7   -PterD 6 -PterT 3 -Z 0 ../effEle.mac
+./exampleb1  -Source 7   -ScintD 6 -ScintT 3 -Z 0 ../effEle.mac
 
 ```
 
@@ -49,7 +49,7 @@ Some Use cases:
 - With Eabs
 
 B1->Draw("SourceEne>>num(100)","Eabs>68","")
-B1->Draw("SourceEne>>denom(100)","EnterPterFlag==1","")
+B1->Draw("SourceEne>>denom(100)","EnterScintFlag==1","")
 num->Sumw2()
 num->Divide(denom)
 num->Draw("E")
@@ -57,7 +57,7 @@ num->Draw("E")
 - With NPMT
 
 B1->Draw("SourceEne>>num(200)","Npmt>55","")
-B1->Draw("SourceEne>>denom(200)","EnterPterFlag==1","")
+B1->Draw("SourceEne>>denom(200)","EnterScintFlag==1","")
 num->Sumw2()
 num->Divide(denom)
 num->Draw("E")
@@ -108,9 +108,9 @@ num->Draw("E")
 
 - -SourceT is used to choose the thickness of the source; this is preseted to 7mm, the thickness of the Ga container in GaSet2.
 
-- -PterD is used to choose the diameter of the P-Terfenile; this is preseted to 6mm.
+- -ScintD is used to choose the diameter of the P-Terfenile; this is preseted to 6mm.
 
-- -PterT is used tochoose the thickness of the P-Terfenile; this is preseted to 5mm.
+- -ScintT is used tochoose the thickness of the P-Terfenile; this is preseted to 5mm.
 
 - -CaseLT is used to set the lateral thickness of the probe's case.
 
@@ -142,7 +142,7 @@ CPU TIMES NEEDED FOR 1e5 PRIMARIES:
 - What exits source (!->DummyExitSorg) (StepAction);
 - What exit Absorber (if any) (Abs->DummyExitAbs) (StepAction);
 - What enters Probe (DummyEnterProbe->FrontShield) (StepAction);
-- What enters Pter (!->Pter) (StepAction)
+- What enters Scint (!->Scint) (StepAction)
 
 ## OUTPUT:
 A root file named MCsondaGEANT_{Relevant sim info}.root is created, in which on an event (i.e. a primary particle) by event basis it is stored:
@@ -173,38 +173,38 @@ A root file named MCsondaGEANT_{Relevant sim info}.root is created, in which on 
 - 22: AnnihilationZ: Z coord of annihilation point of beta+ source particle [mm]
 
 ### B1 vector (one entry per primary particle that gives a >0 energy deposition):
-- 0: Eabs: energy absorbed in Pter [keV];
-- 1: EAbsComp[3]: vector containing energy absorbed in Pter [keV] due to Electrons (EAbsComp[0]), Positrons (EAbsComp[1]) and photons (EAbsComp[2])
-- 2: InPterTrackN: number of hits inside Pter (it's the length of the following vector);
-- 3: InPterPart[InPterTrackN]: kind of particle of hit inside Pter;
-- 4: InPterEn[InPterTrackN]: energy deposit of single hit of particle inside Pter;
-- 5: InPterPrimEn[InPterTrackN]: energy of the primary particle (decay product, or fresh primary e/gamma) that origined the hit of particle inside Pter [keV];
-- 6: InPterPrimPart[InPterTrackN]: PID of the primary particle (decay product, or fresh primary e/gamma) that origined the hit of particle inside Pter [keV];
-- 7: InPterTime[InPterTrackN]: time of interaction of hit inside Pter [ns] (To be really undersood);
-- 8: InPterX[InPterTrackN]: X position of hit inside Pter [mm];
-- 9: InPterY[InPterTrackN]: Y position of hit inside Pter [mm];
-- 10: InPterZ[InPterTrackN]: Z position of hit inside Pter [mm];
-- 11: PrePterTrackN: number of tracks entering Pter (from wherever) per primary (it's the length of the following vector);
-- 12: PrePterPart[PrePterTrackN]: kind of particle of each track entering Pter (from wherever);
-- 13: PrePterEn[PrePterTrackN]: kinetic energy of particle of each tracks entering Pter (from wherever) [keV];
+- 0: Eabs: energy absorbed in Scint [keV];
+- 1: EAbsComp[3]: vector containing energy absorbed in Scint [keV] due to Electrons (EAbsComp[0]), Positrons (EAbsComp[1]) and photons (EAbsComp[2])
+- 2: InScintTrackN: number of hits inside Scint (it's the length of the following vector);
+- 3: InScintPart[InScintTrackN]: kind of particle of hit inside Scint;
+- 4: InScintEn[InScintTrackN]: energy deposit of single hit of particle inside Scint;
+- 5: InScintPrimEn[InScintTrackN]: energy of the primary particle (decay product, or fresh primary e/gamma) that origined the hit of particle inside Scint [keV];
+- 6: InScintPrimPart[InScintTrackN]: PID of the primary particle (decay product, or fresh primary e/gamma) that origined the hit of particle inside Scint [keV];
+- 7: InScintTime[InScintTrackN]: time of interaction of hit inside Scint [ns] (To be really undersood);
+- 8: InScintX[InScintTrackN]: X position of hit inside Scint [mm];
+- 9: InScintY[InScintTrackN]: Y position of hit inside Scint [mm];
+- 10: InScintZ[InScintTrackN]: Z position of hit inside Scint [mm];
+- 11: PreScintTrackN: number of tracks entering Scint (from wherever) per primary (it's the length of the following vector);
+- 12: PreScintPart[PreScintTrackN]: kind of particle of each track entering Scint (from wherever);
+- 13: PreScintEn[PreScintTrackN]: kinetic energy of particle of each tracks entering Scint (from wherever) [keV];
 - 14: PreProbeTrackN: number of tracks entering Probe (DummyEnterProbe->FrontShield) per primary (it's the length of the following vector);
 - 15: PreProbePart[PreProbeTrackN]: kind of particle of each track entering Probe (DummyEnterProbe->FrontShield);
 - 16: PreProbeEn[PreProbeTrackN]: kinetic energy of particle of each tracks entering Probe (DummyEnterProbe->FrontShield) [keV];
 - 17: PostAbsTrackN: number of tracks exiting Absorber (Abs->DummyExitAbs) (if any, otherwise 0) per primary (it's the length of the following vector);
-- 18: PostAbsPart[PrePterTrackN]: kind of particle of each track entering  Absorber (Abs->DummyExitAbs) (if any, otherwise empty);
-- 19: PostAbsEn[PrePterTrackN]: kinetic energy of particle of each tracks entering  Absorber (Abs->DummyExitAbs) (if any, otherwise empty)  [keV];
+- 18: PostAbsPart[PreScintTrackN]: kind of particle of each track entering  Absorber (Abs->DummyExitAbs) (if any, otherwise empty);
+- 19: PostAbsEn[PreScintTrackN]: kinetic energy of particle of each tracks entering  Absorber (Abs->DummyExitAbs) (if any, otherwise empty)  [keV];
 - 20:  ExitEne[2+]: kinetic energy of primary particle exiting the source volume (-> DummyExitSorg) [keV];
-- 21: SourceX: X coordinate of primary particle (isotope) giving a signal in Pter [mm];
-- 22: SourceY: Y coordinate of primary particle (isotope) giving a signal in Pter [mm];
-- 23: SourceZ: Z coordinate of primary particle (isotope) giving a signal in Pter [mm];
-- 24: SourceCosX[2]: X directive cosine of decay electron(s) giving a signal in Pter;
-- 25: SourceCosY[2]: Y directive cosine of  decay electron(s) giving a signal in Pter;
-- 26: SourceCosZ[2]: Z directive cosine of decay electron(s) giving a signal in Pter;
-- 27: SourceEne[2]: kinetic energy of  decay product(s)  giving a signal in Pter [keV];
-- 28: SourcePart[2]: PID of  decay product(s)  giving a signal in Pter [keV];
-- 29: SourceIsotope: isotope of primary particle (0=Sr, 1=Y) giving a signal in Pter;
+- 21: SourceX: X coordinate of primary particle (isotope) giving a signal in Scint [mm];
+- 22: SourceY: Y coordinate of primary particle (isotope) giving a signal in Scint [mm];
+- 23: SourceZ: Z coordinate of primary particle (isotope) giving a signal in Scint [mm];
+- 24: SourceCosX[2]: X directive cosine of decay electron(s) giving a signal in Scint;
+- 25: SourceCosY[2]: Y directive cosine of  decay electron(s) giving a signal in Scint;
+- 26: SourceCosZ[2]: Z directive cosine of decay electron(s) giving a signal in Scint;
+- 27: SourceEne[2]: kinetic energy of  decay product(s)  giving a signal in Scint [keV];
+- 28: SourcePart[2]: PID of  decay product(s)  giving a signal in Scint [keV];
+- 29: SourceIsotope: isotope of primary particle (0=Sr, 1=Y) giving a signal in Scint;
 - 30: Npmt: number of optical photons entering SiPm per event;
-- 31: EnterPterFlag: bool flag to save if the primary particle had a secondary track entering PTER;
+- 31: EnterScintFlag: bool flag to save if the primary particle had a secondary track entering PTER;
 - 32: AnnihilationX: X coord of annihilation point of beta+ source particle [mm]
 - 33: AnnihilationY: Y coord of annihilation point of beta+ source particle [mm]
 - 34: AnnihilationZ: Z coord of annihilation point of beta+ source particle [mm]
@@ -250,14 +250,14 @@ B1->Draw("EabsComp[2]","EabsComp[2]>0")
 B1->Draw("EabsComp[0]","EabsComp[0]>0")
 
 _file2->cd()
-B1->Draw("PrePterEn","PrePterPart==22")
-B1->Draw("PrePterEn","PrePterPart==11")
+B1->Draw("PreScintEn","PreScintPart==22")
+B1->Draw("PreScintEn","PreScintPart==11")
 _file1->cd()
-B1->Draw("PrePterEn","PrePterPart==22")
-B1->Draw("PrePterEn","PrePterPart==11")
+B1->Draw("PreScintEn","PreScintPart==22")
+B1->Draw("PreScintEn","PreScintPart==11")
 _file0->cd()
-B1->Draw("PrePterEn","PrePterPart==22")
-B1->Draw("PrePterEn","PrePterPart==11")
+B1->Draw("PreScintEn","PreScintPart==22")
+B1->Draw("PreScintEn","PreScintPart==11")
 
 
 
@@ -268,9 +268,9 @@ Per disegnare contributi Sr e Y:
 ```
 B1->Draw("Eabs")
 B1->SetLineColor(kBlue)
-B1->Draw("InPterEnSr","","same")
+B1->Draw("InScintEnSr","","same")
 B1->SetLineColor(kRed)
-B1->Draw("InPterEnY","","same")
+B1->Draw("InScintEnY","","same")
 ````
 
 ## CHANGELOG
@@ -293,15 +293,15 @@ B1->Draw("InPterEnY","","same")
 - Changed "ExtY" to "ExtY" in output file naming
 
 2018.04.23 by collamaf
-- Now resin is always present in front of Pter, if flag not selected made of air (useful for scoring)
-- Added double crossing check also for particles entering Pter
+- Now resin is always present in front of Scint, if flag not selected made of air (useful for scoring)
+- Added double crossing check also for particles entering Scint
 
 2018.04.26 by collamaf
-- Added InPterEnPrim to bring primary particle info to Riduzione and DataAnalysis
+- Added InScintEnPrim to bring primary particle info to Riduzione and DataAnalysis
 
 2018.05.7 by collamaf
 - first implementation of storage of time of interection. Still not clear which time to save...
-- Introduced possibility to simulate bare SiPm (assumed to be a particular version of Pter detector): SensorChoice=3
+- Introduced possibility to simulate bare SiPm (assumed to be a particular version of Scint detector): SensorChoice=3
 
 
 2018.05.31 by collamaf
@@ -340,7 +340,7 @@ B1->Draw("InPterEnY","","same")
 - Added scoring of "Npmt" in root file and "_Scint" to filename
 - Now the progress status is printed on screen (since on Primaries file sometimes does not work) and every 10% of evts
 - Changed condition to score primary decay product: added requeste StepN==0 to avoid double counting particles interacting via optical processes. Should not have any other undesired effect
-- Excluded OptFot from InPter scoring to avoid huge size of root file
+- Excluded OptFot from InScint scoring to avoid huge size of root file
 - Changed X and Z in filename to be in 0.1mm
 
 2018.06.22 by collamaf
@@ -354,7 +354,7 @@ B1->Draw("InPterEnY","","same")
 - Addition of "GaSetting" flag to choiche experimental setup in Ga-Source Case.
 - Addition of the 3D-Printed expreimental setup.
 - In -GaSet 2  -CaseDepth>0 case, every distances are setted and can't be modified by line comand exept the ProbeCase Depth.
-- In -GaSet 2 case exists only 2 configurations: if CaseDepth>0 we have the one with ProbeCase while if CaseDepth<0 we have the classic beta minus probe (that is an aluminum case behind the Pter).
+- In -GaSet 2 case exists only 2 configurations: if CaseDepth>0 we have the one with ProbeCase while if CaseDepth<0 we have the classic beta minus probe (that is an aluminum case behind the Scint).
 - In -GaSet 2 case if CaseDepth<0 his absolute value correspondes to the aluminum case's length.
 - In -GaSet 1 case we have the usual simulation (the one before this upgrade).
 - To must be add, 3D-Printed expreimental setup's material.
@@ -375,7 +375,7 @@ B1->Draw("InPterEnY","","same")
 2018.07.17 by MorettiR
 - Fixed bug in geometry relative to Dummy placement.
 - Addition of another solid Dummy2 for stepping action in -GaSet 2 case.
-- Example of a line comad for the optimal choice of the absorber type: ./exampleb1 -GaSet 2 -CaseDepth -40 -Source 4 -AbsD 0 -AbsT 1 -AbsMat 2 -AppMat 1 -Z 0.5 -PosAbs 1 -PterD 5 -PterT 3 ../run1.mac
+- Example of a line comad for the optimal choice of the absorber type: ./exampleb1 -GaSet 2 -CaseDepth -40 -Source 4 -AbsD 0 -AbsT 1 -AbsMat 2 -AppMat 1 -Z 0.5 -PosAbs 1 -ScintD 5 -ScintT 3 ../run1.mac
 
 2018.07.19 by MorettiR
 - File name fixed.
@@ -473,7 +473,7 @@ This because the configuration used at Gemelli's hospital in which the probe was
 
 2019.01.17 by collamaf
 - Cleaned OutFileName generation in main
-- Fixed InPterPrimPart (was same as SourcePart)
+- Fixed InScintPrimPart (was same as SourcePart)
 - Updated readme about scoring
 
 2019.04.01 by collamaf
