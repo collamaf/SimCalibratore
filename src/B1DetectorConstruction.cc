@@ -138,8 +138,15 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	Polystyrene->AddElement(elC, natoms=19);
 	Polystyrene->AddElement(elH, natoms=21);
 	
+	// Polypropelene
+	
+	G4Material* Polyethilene = new G4Material ("Polypropelene" , 0.92*g/cm3, 2);
+	Polyethilene->AddElement(elH,2);
+	Polyethilene->AddElement(elC,1);
+	
+	
 	G4Material* Scint_mat = Polystyrene;
-	G4Material* Vial_mat = Polystyrene;
+	G4Material* Vial_mat = Polyethilene;
 
 	//##########################
 	//###################################################
@@ -222,8 +229,8 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double ScintBucoR=15*mm/2.;
 	G4double ScintBucoZ=fHoleZ;
 	
-	G4double VialR=14.15*mm/2.;
-	G4double VialDR=1*mm;
+	G4double VialR=14*mm/2.;
+	G4double VialDR=0.83*mm;
 	G4double VialZ=46*mm;
 	G4double VialCapZ=VialDR;
 

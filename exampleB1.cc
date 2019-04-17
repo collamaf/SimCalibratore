@@ -70,10 +70,10 @@ int main(int argc,char** argv)
 	G4UIExecutive* ui = 0;
 	G4String MacroName ="";
 
-	G4double HoleZ=3., OrganZ=2., OrganR=0.;
+	G4double HoleZ=3., OrganZ=5., OrganR=0.;
 	//AbsorberHoleDiam=-1., TBRvalue=1.,ScintDiameter=6.,ScintThickness=5.,SourceDiameter=10.,SourceThickness=7., AbsorberThickness=1.,ProbeCaseDepth=-155., ProbeCaseLateralThickness=1.25, ProbeCaseBackThickness=20. , HSLateralThickness=1., HSBackThickness=2., AbsCenter=2.75;
 	
-	G4int SourceSelect=0, NoOfPrimToGen=100000, Verbose=0; //, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
+	G4int SourceSelect=0, NoOfPrimToGen=99, DefNoOfPrimToGen=100000, Verbose=0; //, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
 	//G4bool ScintFlag=0;
 	
 	G4String fileName ="";
@@ -132,13 +132,12 @@ int main(int argc,char** argv)
 	G4String OutFileName="CALIBmc";
 	G4String FileNameCommonPart;
 	
-	
 	// ###### DETECTOR:
 	FileNameCommonPart.append("_HoleZ" + std::to_string((G4int)(10*HoleZ)));
 	
 	// ###### ORGAN
 	if (SourceSelect==0) {
-		NoOfPrimToGen*=OrganZ;
+		if (NoOfPrimToGen==99) NoOfPrimToGen=DefNoOfPrimToGen*(OrganZ/2); //if untouched means it is ok to use default number of primaries scaling for different volume
 		FileNameCommonPart.append("_OrganZ"+ std::to_string((G4int)(10*OrganZ)));
 		if (OrganR!=0) FileNameCommonPart.append("_OrganR"+ std::to_string((G4int)(10*OrganR)));
 	} else if (SourceSelect==1) {
