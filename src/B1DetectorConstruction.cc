@@ -280,12 +280,12 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	
 	
 	
-	if (fSourceSelect==1) {
+	if (fSourceSelect==0) { //Vial Y source
 	G4VPhysicalVolume* physVial=new G4PVPlacement(0,posVial,logicVial,"Vial",logicWorld,false,0, checkOverlaps);
 		new G4PVPlacement(0,posSourceOrgan,logicSourceOrgan,"Source",logicWorld,false,0,checkOverlaps);
 
 	logicVial->SetVisAttributes(VialVisAtt);
-	} else if (fSourceSelect==0) { //Sr Lab Source
+	} else if (fSourceSelect==1) { //Sr Lab Source
 		G4ThreeVector posSourceSR = G4ThreeVector(0, 0, -ScintZ*0.5-DzSourceSR/2.);
 		new G4PVPlacement(0,posSourceSR,logicSourceSR,"Source",logicWorld,false,0,checkOverlaps);
 	}

@@ -38,7 +38,7 @@
 class B1ActionInitialization : public G4VUserActionInitialization
 {
 public:
-	B1ActionInitialization(G4double, G4double, G4double, G4double, G4int, G4int, G4double, G4double, G4String,G4int, G4double);
+	B1ActionInitialization(G4double, G4double, G4int, G4String);
 	virtual ~B1ActionInitialization();
 	
 	virtual void BuildForMaster() const;

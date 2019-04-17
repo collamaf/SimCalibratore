@@ -63,10 +63,10 @@ using std::ios;
 using std::endl;
 
 
-B1PrimaryGeneratorAction::B1PrimaryGeneratorAction(B1EventAction* eventAction, G4double TBR, G4int SourceSelect, G4double SourceDiameter, G4double SourceThickness, G4int GaSetting, G4double CaseDepth)
+B1PrimaryGeneratorAction::B1PrimaryGeneratorAction(B1EventAction* eventAction, G4int SourceSelect)
 : G4VUserPrimaryGeneratorAction(),
 fParticleGun(0) ,
-evtPrimAction(eventAction), fTBR(TBR), fSourceSelect(SourceSelect), fSourceDiameter(SourceDiameter), fSourceThickness(SourceThickness),fGaSet(GaSetting), fCaseDepth(CaseDepth)
+evtPrimAction(eventAction),fSourceSelect(SourceSelect)
 
 {
 	G4int n_particle = 1;
@@ -131,18 +131,9 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 {
 	//Stronzium
-	G4int Z = 38, A = 90;
-	if (fSourceSelect==3) Z=39; //If I need Y instead of Sr
-	if (fSourceSelect==4 ) {
-		Z=31;
-		A=68;
-//		Z=53;
-//		A=131;
-	} else if (fSourceSelect==6) { //Flat Ele
-		FlatEle=true;
-	} else if (fSourceSelect==7) { //Flat Gamma
-		FlatGamma=true;
-	}
+	G4int Z = 39, A = 90;
+	if (fSourceSelect==1) Z=38; //If I need Y instead of Sr
+	
 	G4double ionCharge   = 0.*eplus;
 	G4double excitEnergy = 0.*keV;
 	
@@ -152,67 +143,39 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 	fParticleGun->SetParticleDefinition(ion);
 	fParticleGun->SetParticleCharge(ionCharge);
 	
-	G4double VolA=CLHEP::pi*fDZExt*(fRadiusExt*fRadiusExt-fRadiusInt*fRadiusInt);
-	G4double VolB=CLHEP::pi*fRadiusInt*fRadiusInt*fDZInt;
-	G4double VolC=CLHEP::pi*fRadiusInt*fRadiusInt*(fDZExt-fDZInt);
-	G4double denominatore=VolA+VolB*fTBR+VolC;
-	G4double ProbA=VolA/denominatore;
-	G4double ProbB=VolB*fTBR/denominatore;
-	G4double ProbC=VolC/denominatore;
-	
+
 	G4double zSource=0;
 	G4double zSourceOffset=2e-5*mm; //to avoid generating particles at the very boundary of source!
 	
 	//	if (fRadiusExt==fRadiusInt) { //se ho un solo raggio ignoro il TBR e faccio la pasticca di sorgente
-	if (fSourceSelect==1||fSourceSelect==2 || fSourceSelect==6) { //se ho una delle due pasticche di Sr ignoro il TBR e faccio la pasticca di sorgente
+	if (fSourceSelect==0) { //se ho una delle due pasticche di Sr ignoro il TBR e faccio la pasticca di sorgente
+		G4Tubs* 	SorgVol=	(G4Tubs*) G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetLogicalVolume()->GetSolid();
+		
+		G4double OrganSourceOffsetZ=(G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetTranslation().z())*mm;
+
+		
+		fRadiusMax=SorgVol->GetOuterRadius();
+		fRadiusMin=0*mm;
+
+		fZ=SorgVol->GetZHalfLength()*2*mm;
+//		zSource = -(G4UniformRand()*fZ+zSourceOffset)-OrganSourceOffsetZ;
+		zSource=(G4UniformRand()*fZ-1)+OrganSourceOffsetZ;
+//		G4cout<<"fZ= "<<fZ<<" zSourceOffset= "<<zSourceOffset << " OrganSourceOffsetZ= "<<OrganSourceOffsetZ<<" zSource= " <<zSource<<G4endl;
+		
+		
+	} else if (fSourceSelect==1) {
 		fRadiusMax=fRadiusInt;
 		fRadiusMin=0*mm;
 		zSource = -zSourceOffset;
-	} else if (fSourceSelect==3) { // Extended source with TBR
-		G4double random=G4UniformRand();
-		if (random<=ProbA) {  //faccio il cilindretto cavo esterno al centro (VolA)
-			fRadiusMax=fRadiusExt;
-			fRadiusMin=fRadiusInt;
-			fZ=fDZExt;
-			zSource = -G4UniformRand()*fZ-zSourceOffset;
-		} else if (random>ProbA && random<=ProbA+ProbB) {    //faccio il cilindretto attivo al centro (VolB) SEGNALE!!!!
-			fRadiusMax=fRadiusInt;
-			fRadiusMin=0*mm;
-			fZ=fDZInt;
-			zSource = -G4UniformRand()*fZ-zSourceOffset;
-		} else if (random>ProbA+ProbB) {     //faccio il cilindretto dietro a quello attivo al centro (VolC)
-			fRadiusMax=fRadiusInt;
-			fRadiusMin=0*mm;
-			fZ=fDZExt-fDZInt;
-			zSource = -G4UniformRand()*fZ-fDZInt-zSourceOffset;
-		}
-	} else if (fSourceSelect==4 && fGaSet==1) {
-		fRadiusMax=fRadiusInt;
-		fRadiusMin=0*mm;
-		fZ=fDZExt;
-		zSource = -G4UniformRand()*fZ-zSourceOffset;
-	} else if (fSourceSelect==4 && fGaSet==2) {
-		fRadiusMax=fRadiusInt;
-		fRadiusMin=0*mm;
-		G4Tubs* 	SorgVol=	(G4Tubs*) G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetLogicalVolume()->GetSolid();
-		fZ=SorgVol->GetZHalfLength ()*2*mm;
-		zSource = -G4UniformRand()*fZ-zSourceOffset;
-	}else if (fSourceSelect==4 && fGaSet==3) {
-		fRadiusMax=fRadiusInt;
-		fRadiusMin=0*mm;
-		fZ=fDZExt;
-		G4Tubs* 	SorgVol=	(G4Tubs*) G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetLogicalVolume()->GetSolid();
-		G4double ZGaOffset=(G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetTranslation().z()-SorgVol->GetZHalfLength ())*mm;
-		zSource = -G4UniformRand()*fZ-zSourceOffset-(-ZGaOffset-fDZExt);
 	}
 	
-	G4double Sphere_Theta=G4UniformRand()*CLHEP::pi*2.;
-	G4double Sphere_Phi=acos(2*G4UniformRand()-1);
-	G4double Sphere_U=cos(Sphere_Phi);
-	G4double Sphere_X=sqrt(1-Sphere_U*Sphere_U)*cos(Sphere_Theta);
-	G4double Sphere_Y=sqrt(1-Sphere_U*Sphere_U)*sin(Sphere_Theta);
-	G4double Sphere_Z=Sphere_U;
-	G4double Sphere_Radius=5*cm;
+//	G4double Sphere_Theta=G4UniformRand()*CLHEP::pi*2.;
+//	G4double Sphere_Phi=acos(2*G4UniformRand()-1);
+//	G4double Sphere_U=cos(Sphere_Phi);
+//	G4double Sphere_X=sqrt(1-Sphere_U*Sphere_U)*cos(Sphere_Theta);
+//	G4double Sphere_Y=sqrt(1-Sphere_U*Sphere_U)*sin(Sphere_Theta);
+//	G4double Sphere_Z=Sphere_U;
+//	G4double Sphere_Radius=5*cm;
 	
 	fParticleGun->SetParticleEnergy(0*MeV); //SetParticleEnergy uses kinetic energy
 	
@@ -235,55 +198,10 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 	G4double yDirection=0;
 	G4double zDirection=0;
 	
-	if (fSourceSelect==5) {
-		Source_X=Sphere_Radius*Sphere_X;
-		Source_Y=Sphere_Radius*Sphere_Y;
-		if (fCaseDepth>0 )
-			Sphere_ZOffset=G4PhysicalVolumeStore::GetInstance()->GetVolume("MiddleCase")->GetTranslation().z();
-		Source_Z=Sphere_Radius*Sphere_Z+Sphere_ZOffset;
-		G4ParticleDefinition* fotone = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-		fParticleGun->SetParticleDefinition(fotone);
-		fParticleGun->SetParticleEnergy(0.511*MeV);
-		xDirection=PhotDir_ux;
-		yDirection=PhotDir_uy;
-		zDirection=PhotDir_uz;
-	}
 	
-	if (FlatEle) {
-		fParticleGun->SetParticleDefinition(	G4ParticleTable::GetParticleTable()->FindParticle("e-"));
-		G4double randomEne=G4UniformRand()*3;
-		fParticleGun->SetParticleEnergy(randomEne*MeV); //SetParticleEnergy uses kinetic energy
-		evtPrimAction->SetSourceEne(randomEne);
-	} else if (FlatGamma) {
-		//		fParticleGun->SetParticleDefinition(	G4ParticleTable::GetParticleTable()->FindParticle("gamma"));
-		//		fParticleGun->SetParticleCharge(0);
-		G4double randomEne=G4UniformRand()*1;
-		evtPrimAction->SetSourceEne(randomEne);
-		Source_X=Sphere_Radius*Sphere_X;
-		Source_Y=Sphere_Radius*Sphere_Y;
-		if (fCaseDepth>0)
-			Sphere_ZOffset=G4PhysicalVolumeStore::GetInstance()->GetVolume("MiddleCase")->GetTranslation().z();
-		Source_Z=Sphere_Radius*Sphere_Z+Sphere_ZOffset;
-		G4ParticleDefinition* fotone = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
-		fParticleGun->SetParticleDefinition(fotone);
-		fParticleGun->SetParticleEnergy(randomEne);
-		xDirection=PhotDir_ux;
-		yDirection=PhotDir_uy;
-		zDirection=PhotDir_uz;
-	}
 	const	G4ThreeVector SourcePosition = G4ThreeVector(Source_X, Source_Y, Source_Z);
 	
-	//###################################################
-	// Sampling particle initial direction
-	//##########################
-	if (FlatEle) { //If FlatEle source (for Eff) was requested, generate only towards up
-		G4double phi = G4UniformRand()*CLHEP::pi*2.;
-		G4double costheta = G4UniformRand();
-		G4double theta = acos(costheta);
-		xDirection = sin(theta)*cos(phi);
-		yDirection = sin(theta)*sin(phi);
-		zDirection = costheta;
-	}
+
 	fParticleGun->SetParticleMomentumDirection(G4ThreeVector(xDirection,yDirection,zDirection));
 	fParticleGun->SetParticlePosition(SourcePosition);
 	
@@ -296,14 +214,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 	
 	if(anEvent->GetEventID()==1) {  //stampo informazioni sorgente
 		G4cout<<"############# SORGENTE RICHIESTA: = "<<fSourceSelect<<"##############"<<G4endl;
-		G4cout<<"Dimensioni sorgente: Raggio interno = "<<fRadiusInt<<", Raggio esterno = "<<fRadiusExt<<", H = "<<fZ<<G4endl;
-		if (fSourceSelect==3) { //solo se è la sorgente ExtY..
-			G4cout<<"TBR richiesto= "<<fTBR<<G4endl;
-			G4cout<<"VolA= "<<VolA<<", ProbA= "<<ProbA<<G4endl;
-			G4cout<<"VolB= "<<VolB<<", ProbB= "<<ProbB<<G4endl;
-			G4cout<<"VolC= "<<VolC<<", ProbC= "<<ProbC<<G4endl;
-			G4cout<<"Volume sorgente tot= "<<VolA+VolB+VolC<<G4endl;
-		}
+		G4cout<<"Dimensioni sorgente: Raggio interno = "<<fRadiusMin<<", Raggio esterno = "<<fRadiusMax<<", H = "<<fZ<<G4endl;
 	}
 }
 

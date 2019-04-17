@@ -68,9 +68,11 @@ int main(int argc,char** argv)
 	// Detect interactive mode (if no arguments) and define UI session
 	G4UIExecutive* ui = 0;
 	
-	G4double x0Scan=0., ZValue=2., AbsorberHoleDiam=-1., TBRvalue=1.,PterDiameter=6.,PterThickness=5.,SourceDiameter=10.,SourceThickness=7., AbsorberThickness=1.,ProbeCaseDepth=-155., ProbeCaseLateralThickness=1.25, ProbeCaseBackThickness=20. , HSLateralThickness=1., HSBackThickness=2., AbsCenter=2.75;
-	G4int SourceChoice=1, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
-	G4bool ScintFlag=0;
+	G4double HoleZ=3., OrganZ=2., OrganR=0.;
+	//AbsorberHoleDiam=-1., TBRvalue=1.,PterDiameter=6.,PterThickness=5.,SourceDiameter=10.,SourceThickness=7., AbsorberThickness=1.,ProbeCaseDepth=-155., ProbeCaseLateralThickness=1.25, ProbeCaseBackThickness=20. , HSLateralThickness=1., HSBackThickness=2., AbsCenter=2.75;
+	
+	G4int SourceSelect=0; //, AbsorberMaterial=1, HousingCase=3, GaSetting=1,ApparatusMat=1,PosAbsorber=1;
+	//G4bool ScintFlag=0;
 	
 	G4String fileName ="";
 	G4String FileNameLabel="";
@@ -80,85 +82,25 @@ int main(int argc,char** argv)
 		{
 			G4String option(argv[i]);
 			G4cout<<"option: "<<i<<" "<<option<<G4endl;
-			if(option.compare("-AbsD")==0)
+			if(option.compare("-OrganZ")==0)
 			{
-				AbsorberHoleDiam=strtod (argv[++i], NULL);;
+				OrganZ=strtod (argv[++i], NULL);;
 			}
-			else if(option.compare("-AbsT")==0)
+			else if(option.compare("-OrganZ")==0)
 			{
-				AbsorberThickness=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-AbsMat")==0)
-			{
-				AbsorberMaterial=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-Z")==0)
-			{
-				ZValue=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-TBR")==0)
-			{
-				TBRvalue=strtod (argv[++i], NULL);;
+				OrganR=strtod (argv[++i], NULL);;
 			}
 			else if(option.compare("-Source")==0)
 			{
-				SourceChoice=strtod (argv[++i], NULL);;
+				SourceSelect=strtod (argv[++i], NULL);;
 			}
-			else if(option.compare("-X")==0)
+			else if(option.compare("-HoleZ")==0)
 			{
-				x0Scan=strtod (argv[++i], NULL);;
+				HoleZ=strtod (argv[++i], NULL);;
 			}
-			else if(option.compare("-PterD")==0)
-			{
-				PterDiameter=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-PterT")==0)
-			{
-				PterThickness=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-SourceD")==0)
-			{
-				SourceDiameter=strtod (argv[++i], NULL);;
-			}
-			else if(option.compare("-SourceT")==0)
-			{
-				SourceThickness=strtod (argv[++i], NULL);;
-			}else if(option.compare("-CaseDepth")==0)         //Probe Case Z_Lenght
-			{
-				ProbeCaseDepth=strtod (argv[++i], NULL);;
-			}else if(option.compare("-CaseLT")==0)            //Lateral Probe Case Thickness
-			{
-				ProbeCaseLateralThickness=strtod (argv[++i], NULL);;
-			}else if(option.compare("-CaseBT")==0)            //Back Probe Case Thickness
-			{
-				ProbeCaseBackThickness=strtod (argv[++i], NULL);;
-			}else if(option.compare("-HSLT")==0)            //Lateral Thickness Horseshoe
-			{
-				HSLateralThickness=strtod (argv[++i], NULL);;
-			}else if(option.compare("-HSBT")==0)            //Back Thickness Horseshoe
-			{
-				HSBackThickness=strtod (argv[++i], NULL);;
-			}else if(option.compare("-HSMat")==0)
-			{
-				HousingCase=strtod (argv[++i], NULL);;
-			}else if(option.compare("-Scint")==0)
-			{
-				ScintFlag= argv[++i];;
-			}else if(option.compare("-Label")==0)
+			else if(option.compare("-Label")==0)
 			{
 				FileNameLabel= argv[++i];;
-			}else if(option.compare("-GaSet")==0)
-			{
-				GaSetting= strtod (argv[++i], NULL);;
-			}else if(option.compare("-AppMat")==0)
-			{
-				ApparatusMat= strtod (argv[++i], NULL);;
-			}else if(option.compare("-PosAbs")==0)
-			{
-				PosAbsorber= strtod (argv[++i], NULL);;
-			}else if(option.compare("-ZAbs")==0)
-			{
-				AbsCenter= strtod (argv[++i], NULL);;
 			}
 		}
 		else
@@ -171,46 +113,23 @@ int main(int argc,char** argv)
 		ui = new G4UIExecutive(argc, argv);
 	}
 	
-	G4int SourceSelect=SourceChoice;
-	G4int GaSet=GaSetting;
 	
-	G4String OutFileName="PTERmc";
+	G4String OutFileName="CALIBmc";
 	G4String FileNameCommonPart;
 	
-	G4String MaterialiAssorbitore[4]= {"Cu","Pb","Al","PVC"};
 	
-	// ###### PTER
-	FileNameCommonPart.append("_PDiam" + std::to_string((G4int)PterDiameter)+"_PDz" + std::to_string((G4int)PterThickness));
+	// ###### DETECTOR:
+	FileNameCommonPart.append("_HoleZ" + std::to_string((G4int)(10*HoleZ)));
 	
-	// ###### X and Z
-	FileNameCommonPart.append("_X"+ std::to_string((G4int)(10*x0Scan)));
-	FileNameCommonPart.append("_Z"+ std::to_string((G4int)(10*ZValue)));
-	
-	// ###### ABSORBER
-	if (AbsorberHoleDiam<0) FileNameCommonPart.append("_NoAbs");
-	else {
-		if (GaSet==1)  FileNameCommonPart.append("_AbsDz" + std::to_string((G4int)(1000*AbsorberThickness))+"_AbsHoleD" + std::to_string((G4int)AbsorberHoleDiam) +"_AbsMat" + MaterialiAssorbitore[AbsorberMaterial-1]);
-		if (GaSet==2 || GaSet==3) FileNameCommonPart.append("_PosAbs"+std::to_string((G4int)(PosAbsorber))+"_AbsT" + std::to_string((G4int)(100*AbsorberThickness))+"_AbsHoleD" + std::to_string((G4int)AbsorberHoleDiam) +"_AbsMat" + MaterialiAssorbitore[AbsorberMaterial-1]);
+	// ###### ORGAN
+	if (SourceSelect==0) {
+		FileNameCommonPart.append("_OrganZ"+ std::to_string((G4int)(10*OrganZ)));
+		if (OrganR!=0) FileNameCommonPart.append("_OrganR"+ std::to_string((G4int)(10*OrganR)));
+	} else if (SourceSelect==1) {
+		FileNameCommonPart.append("_ExtSr");
 	}
-	
-	// ###### IF LAPAROSCOPIC CASE
-	if (ProbeCaseDepth>0) FileNameCommonPart.append("_CaseDepth" + std::to_string((G4int)(ProbeCaseDepth))+"_CaseLT" + std::to_string((G4int)ProbeCaseLateralThickness) + "_CaseBT" + std::to_string((G4int)(ProbeCaseBackThickness))+"_HSLT" + std::to_string((G4int)HSLateralThickness)+"_HSBT" + std::to_string((G4int)HSBackThickness)+"_HSMat" + std::to_string(HousingCase) );
-	
-	// ###### SOURCES
-	if (SourceSelect==1) FileNameCommonPart.append("_PSr");
-	if (SourceSelect==2) FileNameCommonPart.append("_ExtSr");
-	if (SourceSelect==3) FileNameCommonPart.append("_ExtY");
-	if (SourceSelect==4) {
-		FileNameCommonPart.append("_ExtGa");
-		if (GaSet== 1) FileNameCommonPart.append("_Diam" + std::to_string((G4int)(10*SourceDiameter)) + "_Dz" + std::to_string((G4int)(10*SourceThickness)) + "_Set1");
-		if (GaSet== 2 || GaSet==3) FileNameCommonPart.append("_GaSet"+std::to_string((G4int)(GaSet))+"_AluCaseT" + std::to_string((G4int)(fabs(ProbeCaseDepth))) + "_AppMat" + std::to_string((G4int)(ApparatusMat)));
-	}
-	if (SourceSelect==5) FileNameCommonPart.append("_Sphere511");
-	if (SourceSelect==6) FileNameCommonPart.append("_FlatEle");
-	if (SourceSelect==7) FileNameCommonPart.append("_FlatGamma");
 	
 	// ####### MISCELLANEUS
-	if (ScintFlag) FileNameCommonPart.append("_Scint");
 	if (FileNameLabel!="") FileNameCommonPart.append("_" + FileNameLabel);
 	if (VisFlag) FileNameCommonPart.append("TEST"); //if it was a TEST run under vis
 	
@@ -237,7 +156,7 @@ int main(int argc,char** argv)
 	
 	// Set mandatory initialization classes
 	// Detector construction
-	runManager->SetUserInitialization(new B1DetectorConstruction(x0Scan, ZValue, AbsorberHoleDiam, SourceSelect, AbsorberMaterial,PterDiameter,PterThickness,SourceDiameter,SourceThickness,AbsorberThickness,ProbeCaseDepth,ProbeCaseLateralThickness,ProbeCaseBackThickness,HSLateralThickness,HSBackThickness, HousingCase, ScintFlag, GaSet, ApparatusMat, PosAbsorber, AbsCenter));
+	runManager->SetUserInitialization(new B1DetectorConstruction(HoleZ, OrganZ, SourceSelect));
 	
 	// Physics list
 	//G4VModularPhysicsList* physicsList = new QBBC;
@@ -254,8 +173,8 @@ int main(int argc,char** argv)
 	runManager->SetUserInitialization(physicsList);
 	
 	// User action initialization
-	//	runManager->SetUserInitialization(new B1ActionInitialization(x0Scan, ZValue, AbsHoleDiam, FilterFlag, primFile, TBRvalue,SourceSelect, SourceSelect));
-	runManager->SetUserInitialization(new B1ActionInitialization(x0Scan, ZValue, AbsorberHoleDiam, TBRvalue, SourceSelect, AbsorberMaterial, SourceDiameter, SourceThickness, OutFileName, GaSetting, ProbeCaseDepth));
+	//	runManager->SetUserInitialization(new B1ActionInitialization(x0Scan, OrganZ, AbsHoleDiam, FilterFlag, primFile, TBRvalue,SourceSelect, SourceSelect));
+	runManager->SetUserInitialization(new B1ActionInitialization(HoleZ, OrganZ, SourceSelect, OutFileName));
 	
 	// Initialize visualization
 	//

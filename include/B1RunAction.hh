@@ -49,7 +49,7 @@ class G4Run;
 class B1RunAction : public G4UserRunAction
 {
 public:
-	B1RunAction(G4double, G4double, G4double, G4double, G4int, G4int, G4String);
+	B1RunAction( G4double, G4double, G4int,G4String);
 	virtual ~B1RunAction();
 	
 	// virtual G4Run* GenerateRun();

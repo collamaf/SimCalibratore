@@ -46,7 +46,7 @@ class G4LogicalVolume;
 class B1SteppingAction : public G4UserSteppingAction
 {
   public:
-  B1SteppingAction(B1EventAction* eventAction,B1RunAction* RunningAction, G4double AbsHoleDiam, G4int GaSet, G4int SourceChoice);
+  B1SteppingAction(B1EventAction* eventAction,B1RunAction* RunningAction, G4int SourceChoice);
     virtual ~B1SteppingAction();
 
     // method from the base class

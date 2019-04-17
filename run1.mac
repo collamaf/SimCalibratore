@@ -20,6 +20,6 @@
 #/run/beamOn 18873470
 #/run/beamOn 3200000
 #/run/beamOn 1887347
-/run/beamOn 1646000
-#/run/beamOn 10000000
+# /run/beamOn 1646000
+/run/beamOn 10000
 #000
