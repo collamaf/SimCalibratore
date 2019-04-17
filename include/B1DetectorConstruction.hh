@@ -43,7 +43,7 @@ class G4LogicalVolume;
 class B1DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-	B1DetectorConstruction(G4double, G4double, G4int);
+	B1DetectorConstruction(G4double, G4double, G4double, G4int);
 	virtual ~B1DetectorConstruction();
 	
 	virtual G4VPhysicalVolume* Construct();
@@ -54,6 +54,7 @@ protected:
 	G4LogicalVolume*  fScoringVolume;
 	G4double fHoleZ;
 	G4double fOrganZ;
+	G4double fOrganR;
 	G4int fSourceSelect;
 	
 	G4Region* sorgente = new G4Region("SourceReg");

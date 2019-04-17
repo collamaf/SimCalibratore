@@ -86,7 +86,7 @@ int main(int argc,char** argv)
 			{
 				OrganZ=strtod (argv[++i], NULL);;
 			}
-			else if(option.compare("-OrganZ")==0)
+			else if(option.compare("-OrganR")==0)
 			{
 				OrganR=strtod (argv[++i], NULL);;
 			}
@@ -156,7 +156,7 @@ int main(int argc,char** argv)
 	
 	// Set mandatory initialization classes
 	// Detector construction
-	runManager->SetUserInitialization(new B1DetectorConstruction(HoleZ, OrganZ, SourceSelect));
+	runManager->SetUserInitialization(new B1DetectorConstruction(HoleZ, OrganZ, OrganR, SourceSelect));
 	
 	// Physics list
 	//G4VModularPhysicsList* physicsList = new QBBC;

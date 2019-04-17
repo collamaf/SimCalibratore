@@ -75,41 +75,23 @@ evtPrimAction(eventAction),fSourceSelect(SourceSelect)
 	
 	
 	switch (fSourceSelect) {
-		case 1: //PSr
+		case 0: //Vial Y
 			fRadiusInt=0*mm;
 			fDZInt=0*mm;
 			fRadiusExt=0*mm;
 			fDZExt=0*mm;
 			break;
-			
-		case 6: //FlatEle
-		case 7: //FlatGamma
-		case 2: //ExtSr
+
+		case 1: //ExtSr
 			fRadiusInt=8*mm;  //8 for RM, 10.5mm PG source
 			fDZInt=0*mm;
 			fRadiusExt=8*mm;
 			fDZExt=0*mm;
 			break;
 			
-		case 3: //ExtY
-			fRadiusInt=3*mm;
-			fDZInt=1*mm;
-			fRadiusExt=10.48*mm; //10.48 per Rosa, 6.65 per PG
-			fDZExt=4.57*mm;   //4.4 per Rosa, 5.5 per PG, metto 4.57 per rosa dato V = 1.58
-			break;
-			
-		case 4: //Ga68
-			fRadiusInt=fSourceDiameter/2.*mm;
-			fDZInt=0*mm;
-			fRadiusExt=fSourceDiameter/2.*mm;
-			fDZExt=fSourceThickness*mm;
-			
 		default:
 			break;
 	}
-	
-	if (fSourceSelect==6) FlatEle = true;
-	if (fSourceSelect==7) FlatGamma=true;
 	
 	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
 	G4ParticleDefinition* particle = particleTable->FindParticle("geantino");
@@ -130,9 +112,8 @@ B1PrimaryGeneratorAction::~B1PrimaryGeneratorAction()
 
 void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 {
-	//Stronzium
 	G4int Z = 39, A = 90;
-	if (fSourceSelect==1) Z=38; //If I need Y instead of Sr
+	if (fSourceSelect==1) Z=38;
 	
 	G4double ionCharge   = 0.*eplus;
 	G4double excitEnergy = 0.*keV;
@@ -152,7 +133,6 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 		G4Tubs* 	SorgVol=	(G4Tubs*) G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetLogicalVolume()->GetSolid();
 		
 		G4double OrganSourceOffsetZ=(G4PhysicalVolumeStore::GetInstance()->GetVolume("Source")->GetTranslation().z())*mm;
-
 		
 		fRadiusMax=SorgVol->GetOuterRadius();
 		fRadiusMin=0*mm;
@@ -182,12 +162,6 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 	G4double rho = sqrt(fRadiusMin*fRadiusMin + G4UniformRand()*(fRadiusMax*fRadiusMax-fRadiusMin*fRadiusMin));   //fixed square problem by collamaf with internal radius!
 	G4double alpha = G4UniformRand()*CLHEP::pi*2.;
 	
-	G4double PhotDir_cosTheta = 2*G4UniformRand() - 1., PhotDir_phi = CLHEP::pi*2.*G4UniformRand();
-	G4double PhotDir_sinTheta = std::sqrt(1. - PhotDir_cosTheta*PhotDir_cosTheta);
-	G4double PhotDir_ux = PhotDir_sinTheta*std::cos(PhotDir_phi),
-	PhotDir_uy = PhotDir_sinTheta*std::sin(PhotDir_phi),
-	PhotDir_uz = PhotDir_cosTheta;
-	
 	G4double Source_X=rho*cos(alpha);
 	G4double Source_Y=rho*sin(alpha);
 	G4double Source_Z=zSource;
@@ -197,8 +171,7 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 	G4double xDirection=0;
 	G4double yDirection=0;
 	G4double zDirection=0;
-	
-	
+
 	const	G4ThreeVector SourcePosition = G4ThreeVector(Source_X, Source_Y, Source_Z);
 	
 

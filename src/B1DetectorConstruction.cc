@@ -56,9 +56,9 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-B1DetectorConstruction::B1DetectorConstruction(G4double HoleZ, G4double OrganZ, G4int SourceSelect)
+B1DetectorConstruction::B1DetectorConstruction(G4double HoleZ, G4double OrganZ,G4double OrganR, G4int SourceSelect)
 : G4VUserDetectorConstruction(),
-fScoringVolume(0), fHoleZ(HoleZ), fOrganZ(OrganZ),fSourceSelect(SourceSelect)
+fScoringVolume(0), fHoleZ(HoleZ), fOrganZ(OrganZ),fOrganR(OrganR),fSourceSelect(SourceSelect)
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -235,6 +235,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4double VialCapZ=VialDR;
 
 	G4double SourceOrganR=VialR-VialDR;
+	if (fOrganR!=0) SourceOrganR=fOrganR;
 	G4double SourceOrganZ=fOrganZ;
 	
 	G4VisAttributes* ScintVisAtt=new G4VisAttributes(G4Colour(0,0,1));
