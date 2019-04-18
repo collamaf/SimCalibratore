@@ -137,12 +137,14 @@ void B1PrimaryGeneratorAction::GeneratePrimaries (G4Event* anEvent)
 		fRadiusMax=SorgVol->GetOuterRadius();
 		fRadiusMin=0*mm;
 
-		fZ=SorgVol->GetZHalfLength()*2*mm;
+		fZ=SorgVol->GetZHalfLength()*2;
 //		zSource = -(G4UniformRand()*fZ+zSourceOffset)-OrganSourceOffsetZ;
-		zSource=(G4UniformRand()*fZ-1)+OrganSourceOffsetZ;
+//		zSource=(G4UniformRand()*fZ-1)+OrganSourceOffsetZ;
+		zSource=(G4UniformRand()*fZ-fZ/2)+OrganSourceOffsetZ;
 //		G4cout<<"fZ= "<<fZ<<" zSourceOffset= "<<zSourceOffset << " OrganSourceOffsetZ= "<<OrganSourceOffsetZ<<" zSource= " <<zSource<<G4endl;
 		
-		
+//				G4cout<<"Source Vol Name= "<<fZ<<G4endl;
+
 	} else if (fSourceSelect==1) {
 		fRadiusMax=fRadiusInt;
 		fRadiusMin=0*mm;
