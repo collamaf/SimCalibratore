@@ -2,7 +2,7 @@
 #define NORGAN 10
 {
 	gStyle->SetPalette(kRainBow);
-	double THR=0;
+	double THR=100;
 	
 	TFile* outFile=new TFile(Form("CalibOut%d.root",int(THR)),"RECREATE");
 	TString fileNameTot;
@@ -75,8 +75,8 @@
 	cout<<" ################ FIXING A HOLE DEPTH, WE VARY THE ORGAN THICKNESS "<<endl;
 	for (int iHole=0; iHole<NHOLE; iHole++) {
 		EffRelHole[iHole]=new TGraph();
-		EffRelHole[iHole]->SetName(Form("EffRelHoleZ%dmm",HoleZs[iHole]));
-		EffRelHole[iHole]->SetTitle(Form("EffRelHoleZ%dmm",HoleZs[iHole]));
+		EffRelHole[iHole]->SetName(Form("EffRelHoleZ%dmm",HoleZs[iHole]/10));
+		EffRelHole[iHole]->SetTitle(Form("EffRelHoleZ%dmm",HoleZs[iHole]/10));
 		EffRelHole[iHole]->GetXaxis()->SetTitle("Organ Thickness [mm]");
 		EffRelHole[iHole]->GetYaxis()->SetTitle("f");
 		EffRelHole[iHole]->SetMarkerStyle(23);
@@ -127,15 +127,15 @@
 	cout<<" ################ FIXING A ORGAN THICKNESS, WE VARY THE HOLE DEPTH "<<endl;
 	for (int iOrgan=0; iOrgan<NORGAN; iOrgan++) {
 		EffRelOrgan[iOrgan]=new TGraph();
-		EffRelOrgan[iOrgan]->SetName(Form("EffRelOrganZ%dmm",OrganZs[iOrgan]));
-		EffRelOrgan[iOrgan]->SetTitle(Form("EffRelOrganZ%dmm",OrganZs[iOrgan]));
+		EffRelOrgan[iOrgan]->SetName(Form("EffRelOrganZ%dmm",OrganZs[iOrgan]/10));
+		EffRelOrgan[iOrgan]->SetTitle(Form("EffRelOrganZ%dmm",OrganZs[iOrgan]/10));
 		EffRelOrgan[iOrgan]->GetXaxis()->SetTitle("Organ Thickness [mm]");
 		EffRelOrgan[iOrgan]->GetYaxis()->SetTitle("f");
 		EffRelOrgan[iOrgan]->SetMarkerStyle(23);
 		
 		EffAbsOrgan[iOrgan]=new TGraph();
-		EffAbsOrgan[iOrgan]->SetName(Form("EffAbsOrganZ%dmm",OrganZs[iOrgan]));
-		EffAbsOrgan[iOrgan]->SetTitle(Form("EffAbsOrganZ%dmm",OrganZs[iOrgan]));
+		EffAbsOrgan[iOrgan]->SetName(Form("EffAbsOrganZ%dmm",OrganZs[iOrgan]/10));
+		EffAbsOrgan[iOrgan]->SetTitle(Form("EffAbsOrganZ%dmm",OrganZs[iOrgan]/10));
 		EffAbsOrgan[iOrgan]->GetXaxis()->SetTitle("Organ Thickness [mm]");
 		EffAbsOrgan[iOrgan]->GetYaxis()->SetTitle("f");
 		EffAbsOrgan[iOrgan]->SetMarkerStyle(23);
@@ -170,16 +170,20 @@
 		EffAbsOrganAll->Add(EffAbsOrgan[iOrgan],"P");
 	}
 	
+	TCanvas* canvEffRelHoleAll=new TCanvas();
 	EffRelHoleAll->Draw("A pmc");
 	EffRelHoleAll->Write();
 
+	TCanvas* canvEffAbsHoleAll=new TCanvas();
 	EffAbsHoleAll->Draw("A pmc");
 	EffAbsHoleAll->Write();
 
-	EffRelOrganAll->Draw("A pmc");
+	TCanvas* canvEffRelOrganAll=new TCanvas();
+EffRelOrganAll->Draw("A pmc");
 	EffRelOrganAll->Write();
 	
-	EffAbsOrganAll->Draw("A pmc");
+	TCanvas* canvEffAbsOrganAll=new TCanvas();
+EffAbsOrganAll->Draw("A pmc");
 	EffAbsOrganAll->Write();
 	
 }
