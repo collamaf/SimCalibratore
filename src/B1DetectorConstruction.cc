@@ -129,7 +129,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	
 	G4Material* SourceSR_mat = nist->FindOrBuildMaterial("MyAlu");
 
-	
+	G4Material* PVC_mat= nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
 	// Plastic scintillator tiles (used both in CMS hadron calorimeter
 	// and ATLAS hadron barrel calorimeter):
 	//     X0 = 42.4 cm  and  lambda_I = 79.360 cm.
@@ -276,7 +276,9 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	G4LogicalVolume* logicSourceOrgan =	new G4LogicalVolume(solidSourceOrgan,acqua,"Vial");
 	logicSourceOrgan->SetVisAttributes(SourceOrganVisAtt);
 
-	
+	G4ThreeVector posPistone= posVial;
+G4Tubs* solidPistone =	new G4Tubs("Pistone",0, VialR-VialDR,VialZ*0.5-fOrganZ, Ang0, Ang2Pi);
+	G4LogicalVolume* logicPistone =	new G4LogicalVolume(solidPistone,PVC_mat,"Vial");
 	
 	
 	
@@ -284,6 +286,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 	if (fSourceSelect==0) { //Vial Y source
 	G4VPhysicalVolume* physVial=new G4PVPlacement(0,posVial,logicVial,"Vial",logicWorld,false,0, checkOverlaps);
 		new G4PVPlacement(0,posSourceOrgan,logicSourceOrgan,"Source",logicWorld,false,0,checkOverlaps);
+		new G4PVPlacement(0,posPistone,logicPistone,"Pistone",logicWorld,false,0,checkOverlaps);
 
 	logicVial->SetVisAttributes(VialVisAtt);
 	} else if (fSourceSelect==1) { //Sr Lab Source
