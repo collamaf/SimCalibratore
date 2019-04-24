@@ -66,12 +66,12 @@ B1PhysicsList::B1PhysicsList()
 //	RemovePhysics("CerenkovA");
 //	ConstructProcess(G4Scintillation );
 	
-	
-	G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
-	opticalPhysics->Configure(kCerenkov, false);
-	opticalPhysics->SetCerenkovStackPhotons(false);
-	opticalPhysics->SetScintillationStackPhotons(true);
-	RegisterPhysics(opticalPhysics);
+//	
+//	G4OpticalPhysics* opticalPhysics = new G4OpticalPhysics();
+//	opticalPhysics->Configure(kCerenkov, false);
+//	opticalPhysics->SetCerenkovStackPhotons(false);
+//	opticalPhysics->SetScintillationStackPhotons(true);
+//	RegisterPhysics(opticalPhysics);
 	
 }
 

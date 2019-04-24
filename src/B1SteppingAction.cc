@@ -72,7 +72,7 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 #pragma mark Exiting Source
 	// ################################################################################
 	// ###################### EXITING SOURCE
-	if(fSourceChoice==0 && NextVol && ThisVol->GetName()!="Source" && NextVol->GetName()=="Vial") 
+	if(fSourceChoice==0 && NextVol && ThisVol->GetName()=="Source" && NextVol->GetName()!="Source") 
 	{
 		//collamaf: to avoid double counting same track going back and forth, check if I already counted it
 		if (fEventAction->GetSourceExitStoreTrackID()==step->GetTrack()->GetTrackID()) { //if I already saw this track exiting the source...
